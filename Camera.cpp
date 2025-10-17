@@ -13,12 +13,6 @@ const glm::mat4& Camera::GetViewMatrix() const { return m_ViewMatrix; }
 
 const glm::mat4& Camera::GetProjectionMatrix() const { return m_ProjectionMatrix; }
 
-void Camera::OnUpdate(GLFWwindow* window, float deltaTime)
-{
-	Inputs(window, deltaTime);
-	UpdateMatrices();
-}
-
 void Camera::Inputs(GLFWwindow* window, float deltaTime)
 {
 	// Keyboard

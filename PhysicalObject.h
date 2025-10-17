@@ -24,7 +24,7 @@ public:
 	const glm::vec3& GetVelocity() const;
 	float GetMass() const;
 
-public:
+private:
 	// --- Kinematics ---
 	glm::vec3 position;
 	glm::vec3 velocity;

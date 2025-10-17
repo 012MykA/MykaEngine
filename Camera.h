@@ -8,7 +8,6 @@
 
 #include "Shader.h"
 
-// TODO: getters and setters
 class Camera
 {
 public:
@@ -17,12 +16,10 @@ public:
 	const glm::mat4& GetViewMatrix() const;
 	const glm::mat4& GetProjectionMatrix() const;
 
-	void OnUpdate(GLFWwindow* window, float deltaTime);
-
 	void UpdateMatrices();
 	void Inputs(GLFWwindow* window, float deltaTime);
 
-public: // TODO: change to private
+private:
 	glm::vec3 m_Position;
 	glm::vec3 m_Front = glm::vec3(0.0f, 0.0f, -1.0f);
 	glm::vec3 m_Up = glm::vec3(0.0f, 1.0f, 0.0f);

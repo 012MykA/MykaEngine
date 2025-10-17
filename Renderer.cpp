@@ -7,7 +7,8 @@ Renderer::Renderer()
 
 void Renderer::BeginScene(Camera& camera)
 {
-    viewProjection = camera.m_ProjectionMatrix * camera.m_ViewMatrix;
+    viewProjection = camera.GetProjectionMatrix() * camera.GetViewMatrix();
+
     defaultShader.CompileShaders();
     defaultShader.Use();
 }

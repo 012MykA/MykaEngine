@@ -10,7 +10,7 @@ void SceneObject::Update(float deltaTime)
 
 void SceneObject::Draw(Shader& shader, const glm::mat4& viewProjection)
 {
-    mesh->Draw(shader, physics.modelMatrix, viewProjection);
+    mesh->Draw(shader, physics.GetModelMatrix(), viewProjection);
 }
 
 const glm::mat4& SceneObject::GetModelMatrix() const { return physics.GetModelMatrix(); }

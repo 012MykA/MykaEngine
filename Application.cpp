@@ -1,6 +1,6 @@
 #include "Application.h"
 
-Application::Application() : camera(800, 600, glm::vec3(0.0f, 0.0f, 0.5f)), scene(renderer, camera), timeManager()
+Application::Application() : camera(800, 600, glm::vec3(0.0f, 0.0f, 3.0f)), scene(renderer, camera), timeManager()
 {
 	glfwInit();
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
@@ -97,9 +97,8 @@ void Application::OnUpdate()
 	timeManager.UpdateDeltaTime();
 	imguiManager.NewFrame();
 	float deltaTime = timeManager.GetDeltaTime();
-
 	PollEvents(deltaTime);
-	camera.OnUpdate(window, deltaTime);
+	camera.UpdateMatrices();
 	glClearColor(0.45f, 0.55f, 0.60f, 1.00f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
