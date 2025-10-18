@@ -163,7 +163,6 @@
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="PhysicalObject.cpp" />
     <ClCompile Include="Renderer.cpp" />
-    <ClCompile Include="ResourceManager.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="SceneObject.cpp" />
     <ClCompile Include="Shader.cpp" />
@@ -190,7 +189,6 @@
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="PhysicalObject.h" />
     <ClInclude Include="Renderer.h" />
-    <ClInclude Include="ResourceManager.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="SceneObject.h" />
     <ClInclude Include="Shader.h" />
@@ -198,10 +196,6 @@
     <ClInclude Include="TimeManager.h" />
     <ClInclude Include="VertexArray.h" />
     <ClInclude Include="VertexBuffer.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <Image Include="brick.png" />
-    <Image Include="grass_block.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="defaultFrag.glsl" />

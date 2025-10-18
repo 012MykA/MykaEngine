@@ -10,7 +10,7 @@ namespace GLClasses
 	class Texture
 	{
 	public:
-		Texture(const char* image, GLenum texType, GLenum slot, GLenum format, GLenum pixelType);
+		Texture(const std::string& image, GLenum texType, GLenum slot, GLenum format, GLenum pixelType);
 		~Texture();
 
 		void Bind();

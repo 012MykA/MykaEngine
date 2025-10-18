@@ -37,11 +37,8 @@ void Mesh::Draw(Shader& shader, const glm::mat4& model, const glm::mat4& viewPro
 	shader.CompileShaders();
 	shader.Use();
 
-	// Set model matrix (keep if shader uses it)
 	shader.SetMatrix4("model", model);
 
-	// IMPORTANT: correct order is viewProjection * model
-	// and uniform name must match shader (modelViewProj)
 	glm::mat4 modelViewProj = viewProjection * model;
 	shader.SetMatrix4("modelViewProj", modelViewProj);
 
@@ -51,7 +48,7 @@ void Mesh::Draw(Shader& shader, const glm::mat4& model, const glm::mat4& viewPro
 
 	VAO.Bind();
 
-	if (indices.size() == 0)
+	if (indices.empty())
 	{
 		glDrawArrays(GL_TRIANGLES, 0, vertices.size());
 	}

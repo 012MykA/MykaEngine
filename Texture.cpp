@@ -2,7 +2,7 @@
 
 namespace GLClasses
 {
-	Texture::Texture(const char* image, GLenum texType, GLenum slot, GLenum format, GLenum pixelType)
+	Texture::Texture(const std::string& image, GLenum texType, GLenum slot, GLenum format, GLenum pixelType)
 	{
 		type = texType;
 
@@ -10,7 +10,7 @@ namespace GLClasses
 
 		stbi_set_flip_vertically_on_load(true);
 
-		unsigned char* bytes = stbi_load(image, &widthImg, &heightImg, &numColCh, 0);
+		unsigned char* bytes = stbi_load(image.c_str(), &widthImg, &heightImg, &numColCh, 0);
 		if (bytes == NULL)
 		{
 			std::cout << "Failed to load texture at path: " << image << std::endl;

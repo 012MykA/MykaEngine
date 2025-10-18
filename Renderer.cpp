@@ -1,9 +1,9 @@
 #include "Renderer.h"
 
-Renderer::Renderer()
-    : viewProjection(glm::mat4(1.0f)),
-      defaultShader("C:/Users/Vova/source/repos/MykaEngine 2.0/defaultVert.glsl",
-                    "C:/Users/Vova/source/repos/MykaEngine 2.0/defaultFrag.glsl") {}
+Renderer::Renderer() : viewProjection(glm::mat4(1.0f)),
+    defaultShader("C:/Users/Vova/source/repos/MykaEngine/defaultVert.glsl", "C:/Users/Vova/source/repos/MykaEngine/defaultFrag.glsl") {
+} 
+// TODO: Update shader paths
 
 void Renderer::BeginScene(Camera& camera)
 {
