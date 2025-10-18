@@ -14,4 +14,5 @@ void SceneObject::Draw(Shader& shader, const glm::mat4& viewProjection)
 }
 
 const glm::mat4& SceneObject::GetModelMatrix() const { return physics.GetModelMatrix(); }
+
 std::shared_ptr<Mesh> SceneObject::GetMesh() const { return mesh; }
