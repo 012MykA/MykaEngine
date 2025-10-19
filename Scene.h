@@ -14,6 +14,7 @@ public:
     void Update(float deltaTime);
     void Render();
 
+	friend class ImGuiManager;
 public:
     SceneObject& AddObject(std::shared_ptr<Mesh> mesh);
     SceneObject& AddObject(std::unique_ptr<SceneObject> object);
@@ -26,6 +27,7 @@ private:
 
     std::vector<std::unique_ptr<SceneObject>> objects;
 
-    glm::vec3 gravity = glm::vec3(0.0f);
+    glm::vec3 gravity = glm::vec3(0.0f, -9.81f, 0.0f);
+	bool gravityEnabled = false;
 };
 

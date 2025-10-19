@@ -23,7 +23,13 @@ std::vector<std::unique_ptr<SceneObject>>& Scene::GetObjects()
 void Scene::Update(float deltaTime)
 {
     for (auto& obj : objects)
+    {
+        if (gravityEnabled)
+        {
+            obj->physics.Accelerate(gravity);
+        }
         obj->Update(deltaTime);
+    }
 }
 
 void Scene::Render()

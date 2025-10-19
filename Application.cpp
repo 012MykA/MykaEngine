@@ -78,6 +78,7 @@ Application::Application() : camera(WINDWOW_WIDTH, WINDOW_HEIGHT, glm::vec3(0.0f
 
 	auto object1 = make_unique<SceneObject>(mesh);
 	object1->physics.SetPosition(glm::vec3(1.0f, 1.0f, 1.0f));
+	object1->SetName("Cube");
 	scene.AddObject(std::move(object1));
 
 }
@@ -121,6 +122,7 @@ void Application::PollEvents(float deltaTime)
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	}
 
+	imguiManager.PollEvents();
 	camera.Inputs(window, deltaTime);
 }
 

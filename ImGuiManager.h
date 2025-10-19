@@ -15,7 +15,10 @@ public:
 	void NewFrame();
 
 	void Render(Scene& scene, Camera& camera);
+	void PollEvents();
 
 	void Shutdown();
-};
 
+private:
+	bool show_main_window = true;
+};

@@ -9,6 +9,7 @@ public:
 	PhysicalObject();
 
 	void ApplyForce(const glm::vec3& force);
+	void Accelerate(const glm::vec3& acceleration);
 
 	void Update(float deltaTime);
 

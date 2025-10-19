@@ -9,6 +9,11 @@ void PhysicalObject::ApplyForce(const glm::vec3& force)
 	acceleration += force / mass;
 }
 
+void PhysicalObject::Accelerate(const glm::vec3& acceleration)
+{
+	this->acceleration += acceleration;
+}
+
 void PhysicalObject::Update(float deltaTime)
 {
 	// v = v0 + at	=>	v += at
@@ -17,7 +22,7 @@ void PhysicalObject::Update(float deltaTime)
 	// x = x0 + vt	=>	x += vt
 	position += velocity * deltaTime;
 
-	acceleration = glm::vec3(0.0f);
+	//acceleration = glm::vec3(0.0f);
 
 	UpdateModelMatrix();
 }
