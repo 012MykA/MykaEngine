@@ -15,6 +15,12 @@ namespace GLClasses
 	{
 		glm::vec3 position;
 		glm::vec3 color;
+
+		Vertex operator*=(float multiplier)
+		{
+			position *= multiplier;
+			return *this;
+		}
 	};
 
 	class VertexBuffer

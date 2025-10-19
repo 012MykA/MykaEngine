@@ -16,6 +16,7 @@ public:
 
 	void Draw(Shader& shader, const glm::mat4& model, const glm::mat4& viewProjection);
 
+	friend class ImGuiManager;
 private:
 	std::vector<Vertex> vertices;
 	std::vector<GLuint> indices;

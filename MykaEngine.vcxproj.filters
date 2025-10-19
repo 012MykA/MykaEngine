@@ -69,9 +69,6 @@
     <ClCompile Include="Main.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="Texture.cpp">
-      <Filter>Исходные файлы\GLClasses</Filter>
-    </ClCompile>
     <ClCompile Include="VertexArray.cpp">
       <Filter>Исходные файлы\GLClasses</Filter>
     </ClCompile>
@@ -100,9 +97,6 @@
       <Filter>Исходные файлы</Filter>
     </ClCompile>
     <ClCompile Include="Renderer.cpp">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
-    <ClCompile Include="ResourceManager.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
     <ClCompile Include="Scene.cpp">
@@ -149,9 +143,6 @@
     <ClInclude Include="Shader.h">
       <Filter>Файлы заголовков\GLClasses</Filter>
     </ClInclude>
-    <ClInclude Include="Texture.h">
-      <Filter>Файлы заголовков\GLClasses</Filter>
-    </ClInclude>
     <ClInclude Include="VertexArray.h">
       <Filter>Файлы заголовков\GLClasses</Filter>
     </ClInclude>
@@ -171,9 +162,6 @@
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
     <ClInclude Include="Renderer.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="ResourceManager.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
     <ClInclude Include="Scene.h">

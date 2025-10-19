@@ -22,7 +22,7 @@ void PhysicalObject::Update(float deltaTime)
 	// x = x0 + vt	=>	x += vt
 	position += velocity * deltaTime;
 
-	//acceleration = glm::vec3(0.0f);
+	acceleration = glm::vec3(0.0f);
 
 	UpdateModelMatrix();
 }

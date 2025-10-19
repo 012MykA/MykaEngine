@@ -35,6 +35,7 @@ void Scene::Update(float deltaTime)
 void Scene::Render()
 {
     renderer.BeginScene(camera);
+
     for (auto& obj : objects)
         renderer.Submit(*obj);
 }
