@@ -4,6 +4,9 @@
 #include <imgui/imgui_impl_glfw.h>
 #include <imgui/imgui_impl_opengl3.h>
 
+#include "Camera.h"
+#include "Scene.h"
+
 class ImGuiManager
 {
 public:
@@ -11,7 +14,7 @@ public:
 
 	void NewFrame();
 
-	void Render();
+	void Render(Scene& scene, Camera& camera);
 
 	void Shutdown();
 };

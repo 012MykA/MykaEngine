@@ -19,10 +19,12 @@ public:
 	void UpdateMatrices();
 	void Inputs(GLFWwindow* window, float deltaTime);
 
+	friend class ImGuiManager;
+
 private:
 	glm::vec3 m_Position;
 	glm::vec3 m_Front = glm::vec3(0.0f, 0.0f, -1.0f);
-	glm::vec3 m_Up = glm::vec3(0.0f, 1.0f, 0.0f);
+	glm::vec3 m_Up = glm::vec3(0.0f, 1.0f, 0.0f);	
 
 	glm::mat4 m_ViewMatrix = glm::mat4(1.0f);
 	glm::mat4 m_ProjectionMatrix = glm::mat4(1.0f);
@@ -33,7 +35,7 @@ private:
 	float m_DefaultSpeed = 1.0f;
 	float m_Speed = m_DefaultSpeed;
 
-	float m_FOV = 45.0f;
+	float m_FOV = 70.0f;
 	float m_Near = 0.001f;
 	float m_Far = 100.0f;
 

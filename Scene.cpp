@@ -9,6 +9,17 @@ SceneObject& Scene::AddObject(std::shared_ptr<Mesh> mesh)
     return *objects.back();
 }
 
+SceneObject& Scene::AddObject(std::unique_ptr<SceneObject> object)
+{
+    objects.push_back(std::move(object));
+    return *objects.back();
+}
+
+std::vector<std::unique_ptr<SceneObject>>& Scene::GetObjects()
+{
+	return objects;
+}
+
 void Scene::Update(float deltaTime)
 {
     for (auto& obj : objects)

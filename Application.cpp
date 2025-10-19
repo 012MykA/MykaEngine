@@ -1,13 +1,16 @@
 #include "Application.h"
 
-Application::Application() : camera(800, 600, glm::vec3(0.0f, 0.0f, 3.0f)), scene(renderer, camera), timeManager()
+#define WINDWOW_WIDTH 1920
+#define WINDOW_HEIGHT 1080
+
+Application::Application() : camera(WINDWOW_WIDTH, WINDOW_HEIGHT, glm::vec3(0.0f, 0.0f, 3.0f)), scene(renderer, camera), timeManager()
 {
 	glfwInit();
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-	window = glfwCreateWindow(800, 600, "Simulation", NULL, NULL);
+	window = glfwCreateWindow(WINDWOW_WIDTH, WINDOW_HEIGHT, "Simulation", NULL, NULL);
 	if (window == nullptr)
 	{
 		std::cout << "Failed to create window" << std::endl;
@@ -69,11 +72,14 @@ Application::Application() : camera(800, 600, glm::vec3(0.0f, 0.0f, 3.0f)), scen
 		Vertex{glm::vec3(0.5f, -0.5f, 0.5f), glm::vec3(0.0f, 1.0f, 1.0f)},
 		Vertex{glm::vec3(-0.5f, -0.5f, 0.5f), glm::vec3(0.0f, 1.0f, 1.0f)}};
 
-	Shader shader("C:/Users/Vova/source/repos/MykaEngine/defaultVert.glsl", "C:/Users/Vova/source/repos/MykaEngine/defaultFrag.glsl"); // TODO: pathes
-
 	auto mesh = std::make_shared<Mesh>(verts);
 
 	scene.AddObject(mesh);
+
+	auto object1 = make_unique<SceneObject>(mesh);
+	object1->physics.SetPosition(glm::vec3(1.0f, 1.0f, 1.0f));
+	scene.AddObject(std::move(object1));
+
 }
 
 Application::~Application()
@@ -97,7 +103,7 @@ void Application::OnUpdate()
 	scene.Render();
 	scene.Update(deltaTime);
 
-	imguiManager.Render();
+	imguiManager.Render(scene, camera);
 	glfwPollEvents();
 	glfwSwapBuffers(window);
 }

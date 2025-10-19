@@ -13,12 +13,17 @@ public:
     void Update(float deltaTime);
     void Draw(Shader& shader, const glm::mat4& viewProjection);
 
+public:
+	void SetName(const std::string& name);
+
     const glm::mat4& GetModelMatrix() const;
     std::shared_ptr<Mesh> GetMesh() const;
+    std::string& GetName();
 
     PhysicalObject physics;
 
 private:
+	std::string name;
     std::shared_ptr<Mesh> mesh;
 
 public:

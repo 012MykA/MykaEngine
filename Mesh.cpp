@@ -32,9 +32,6 @@ Mesh::Mesh(const std::vector<Vertex>& vertices) : vertices(vertices)
 
 void Mesh::Draw(Shader& shader, const glm::mat4& model, const glm::mat4& viewProjection)
 {
-	shader.CompileShaders();
-	shader.Use();
-
 	shader.SetMatrix4("model", model);
 
 	glm::mat4 modelViewProj = viewProjection * model;

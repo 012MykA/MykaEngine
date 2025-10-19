@@ -12,6 +12,7 @@ public:
 
 	void Update(float deltaTime);
 
+	friend class ImGuiManager;
 public:
 	// Set
 	void SetPosition(const glm::vec3& pos);
