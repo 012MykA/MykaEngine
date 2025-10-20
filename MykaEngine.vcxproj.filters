@@ -28,9 +28,6 @@
     <Filter Include="Файлы ресурсов\Shaders">
       <UniqueIdentifier>{ddca77e3-f28f-46f0-b53a-050e18d1820c}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Файлы ресурсов\Textures">
-      <UniqueIdentifier>{04ed7e54-7751-40cc-8353-5f076abf95d3}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Исходные файлы\GLClasses">
       <UniqueIdentifier>{a64cdcf9-2b7b-4919-a894-649bfe0320fc}</UniqueIdentifier>
     </Filter>
@@ -108,6 +105,9 @@
     <ClCompile Include="TimeManager.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
+    <ClCompile Include="MeshLibrary.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Libraries\include\imgui\imconfig.h">
@@ -176,14 +176,9 @@
     <ClInclude Include="Application.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <Image Include="grass_block.png">
-      <Filter>Файлы ресурсов\Textures</Filter>
-    </Image>
-    <Image Include="brick.png">
-      <Filter>Файлы ресурсов\Textures</Filter>
-    </Image>
+    <ClInclude Include="MeshLibrary.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="defaultFrag.glsl">

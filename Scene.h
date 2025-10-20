@@ -27,7 +27,7 @@ private:
 
     std::vector<std::unique_ptr<SceneObject>> objects;
 
-    glm::vec3 gravity = glm::vec3(0.0f, -9.81f, 0.0f);
-	bool gravityEnabled = false;
+    glm::vec3 globalGravity = glm::vec3(0.0f, -9.81f, 0.0f);
+	bool globalGravityEnabled = false;
 };
 

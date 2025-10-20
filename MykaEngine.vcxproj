@@ -161,6 +161,7 @@
     <ClCompile Include="Libraries\include\imgui\imgui_widgets.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Mesh.cpp" />
+    <ClCompile Include="MeshLibrary.cpp" />
     <ClCompile Include="PhysicalObject.cpp" />
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="Scene.cpp" />
@@ -186,6 +187,7 @@
     <ClInclude Include="Libraries\include\imgui\imstb_textedit.h" />
     <ClInclude Include="Libraries\include\imgui\imstb_truetype.h" />
     <ClInclude Include="Mesh.h" />
+    <ClInclude Include="MeshLibrary.h" />
     <ClInclude Include="PhysicalObject.h" />
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="Scene.h" />
@@ -194,10 +196,6 @@
     <ClInclude Include="TimeManager.h" />
     <ClInclude Include="VertexArray.h" />
     <ClInclude Include="VertexBuffer.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <Image Include="brick.png" />
-    <Image Include="grass_block.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="defaultFrag.glsl" />

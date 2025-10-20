@@ -24,9 +24,9 @@ void Scene::Update(float deltaTime)
 {
     for (auto& obj : objects)
     {
-        if (gravityEnabled)
+        if (globalGravityEnabled && obj->physics.GetGravityEnabled())
         {
-            obj->physics.Accelerate(gravity);
+            obj->physics.Accelerate(globalGravity);
         }
         obj->Update(deltaTime);
     }

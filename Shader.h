@@ -13,12 +13,10 @@
 
 namespace GLClasses
 {
-	using namespace std;
-
 	class Shader
 	{
 	public:
-		Shader(const string& vertexPath, const string& fragmentPath);
+		Shader(const std::string& vertexPath, const std::string& fragmentPath);
 
 		~Shader();
 
@@ -35,12 +33,12 @@ namespace GLClasses
 	private:
 		GLuint m_Program;
 
-		string m_VertexPath;
-		string m_FragmentPath;
-		string m_VertexData;
-		string m_FragmentData;
+		std::string m_VertexPath;
+		std::string m_FragmentPath;
+		std::string m_VertexData;
+		std::string m_FragmentData;
 
-		GLuint GetUniformLocation(const string name) const;
-		string getFileContent(const string path);
+		GLuint GetUniformLocation(const std::string name) const;
+		std::string getFileContent(const std::string path);
 	};
 }

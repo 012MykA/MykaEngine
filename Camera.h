@@ -37,7 +37,7 @@ private:
 
 	float m_FOV = 70.0f;
 	float m_Near = 0.001f;
-	float m_Far = 100.0f;
+	float m_Far = 1000.0f;
 
 	float m_Yaw = -90.0f;
 	float m_Pitch = 0.0f;

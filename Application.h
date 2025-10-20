@@ -9,6 +9,7 @@
 #include "Scene.h"
 #include "TimeManager.h"
 #include "ImGuiManager.h"
+#include "MeshLibrary.h"
 
 class Application
 {

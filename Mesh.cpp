@@ -41,12 +41,22 @@ void Mesh::Draw(Shader& shader, const glm::mat4& model, const glm::mat4& viewPro
 
 	if (indices.size() == 0)
 	{
-		glDrawArrays(GL_TRIANGLES, 0, vertices.size());
+		glDrawArrays(drawMode, 0, vertices.size());
 	}
 	else
 	{
-		glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
+		glDrawElements(drawMode, indices.size(), GL_UNSIGNED_INT, 0);
 	}
 
 	VAO.Unbind();
 }
+
+void Mesh::SetVertices(const std::vector<Vertex>& vertices) { this->vertices = vertices; }
+
+void Mesh::SetIndices(const std::vector<GLuint>& indices) { this->indices = indices; }
+
+void Mesh::SetDrawMode(GLenum mode) { this->drawMode = mode; }
+
+std::vector<Vertex> Mesh::GetVertices() const { return vertices; }
+
+std::vector<GLuint> Mesh::GetIndices() const { return indices; }

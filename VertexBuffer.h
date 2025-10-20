@@ -9,8 +9,6 @@
 
 namespace GLClasses
 {
-	using namespace std;
-
 	struct Vertex
 	{
 		glm::vec3 position;

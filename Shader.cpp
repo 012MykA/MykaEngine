@@ -1,6 +1,6 @@
 #include "Shader.h"
 
-GLClasses::Shader::Shader(const string& vertexPath, const string& fragmentPath) : m_VertexPath(vertexPath), m_FragmentPath(fragmentPath)
+GLClasses::Shader::Shader(const std::string& vertexPath, const std::string& fragmentPath) : m_VertexPath(vertexPath), m_FragmentPath(fragmentPath)
 {
 	this->m_VertexData = getFileContent(vertexPath);
 	this->m_FragmentData = getFileContent(fragmentPath);
@@ -34,7 +34,7 @@ void GLClasses::Shader::CompileShaders()
 	if (!successful)
 	{
 		glGetShaderInfoLog(vs, 512, NULL, GLInfoLog);
-		cout << "\nCOMPILATION ERROR IN VERTEX SHADER (" << m_VertexPath << ")" << "\n" << GLInfoLog << "\n\n";
+		std::cout << "\nCOMPILATION ERROR IN VERTEX SHADER (" << m_VertexPath << ")" << "\n" << GLInfoLog << "\n\n";
 	}
 
 	glCompileShader(fs);
@@ -43,7 +43,7 @@ void GLClasses::Shader::CompileShaders()
 	if (!successful)
 	{
 		glGetShaderInfoLog(fs, 512, NULL, GLInfoLog);
-		cout << "\nCOMPILATION ERROR IN FRAGMENT SHADER (" << m_FragmentPath << ")" << "\n" << GLInfoLog << "\n";
+		std::cout << "\nCOMPILATION ERROR IN FRAGMENT SHADER (" << m_FragmentPath << ")" << "\n" << GLInfoLog << "\n";
 	}
 
 	m_Program = glCreateProgram();
@@ -56,7 +56,7 @@ void GLClasses::Shader::CompileShaders()
 	if (!successful)
 	{
 		glGetProgramInfoLog(m_Program, 512, NULL, GLInfoLog);
-		cout << "ERROR : SHADER LINKING FAILED : \n" << GLInfoLog << endl;
+		std::cout << "ERROR : SHADER LINKING FAILED : \n" << GLInfoLog << std::endl;
 	}
 
 	glDeleteShader(vs);
@@ -93,12 +93,12 @@ void GLClasses::Shader::SetInteger(const GLchar* name, GLuint value)
 	glUniform1i(GetUniformLocation(name), value);
 }
 
-GLuint GLClasses::Shader::GetUniformLocation(const string name) const
+GLuint GLClasses::Shader::GetUniformLocation(const std::string name) const
 {
 	return glGetUniformLocation(m_Program, name.c_str());
 }
 
-std::string GLClasses::Shader::getFileContent(const string path)
+std::string GLClasses::Shader::getFileContent(const std::string path)
 {
 	std::ifstream shaderFile;
 	shaderFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
@@ -112,7 +112,7 @@ std::string GLClasses::Shader::getFileContent(const string path)
 	}
 	catch (std::ifstream::failure e)
 	{
-		std::cerr << "ERROR::SHADER::FILE_NOT_SUCCESFULLY_READ: " << e.what() << std::endl;
+		std::cout << "ERROR::SHADER::FILE_NOT_SUCCESFULLY_READ: " << e.what() << std::endl;
 		return "";
 	}
 }

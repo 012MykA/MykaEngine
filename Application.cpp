@@ -1,16 +1,16 @@
 #include "Application.h"
 
-#define WINDWOW_WIDTH 1920
+#define WINDOW_WIDTH 1920
 #define WINDOW_HEIGHT 1080
 
-Application::Application() : camera(WINDWOW_WIDTH, WINDOW_HEIGHT, glm::vec3(0.0f, 0.0f, 3.0f)), scene(renderer, camera), timeManager()
+Application::Application() : camera(WINDOW_WIDTH, WINDOW_HEIGHT, glm::vec3(0.0f, 0.0f, 3.0f)), scene(renderer, camera), timeManager()
 {
 	glfwInit();
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-	window = glfwCreateWindow(WINDWOW_WIDTH, WINDOW_HEIGHT, "Simulation", NULL, NULL);
+	window = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "Simulation", NULL, NULL);
 	if (window == nullptr)
 	{
 		std::cout << "Failed to create window" << std::endl;
@@ -19,93 +19,37 @@ Application::Application() : camera(WINDWOW_WIDTH, WINDOW_HEIGHT, glm::vec3(0.0f
 	glfwMakeContextCurrent(window);
 	gladLoadGL();
 
+	MeshLibrary::Initialize();
 	imguiManager.Initialize(window);
 
 	glEnable(GL_DEPTH_TEST);
 
 	{
-		std::vector<Vertex> verts = {
-			Vertex{glm::vec3(-0.5f, -0.5f, 0.5f), glm::vec3(0.0f, 0.0f, 1.0f)},
-			Vertex{glm::vec3(0.5f, -0.5f, 0.5f), glm::vec3(0.0f, 0.0f, 1.0f)},
-			Vertex{glm::vec3(0.5f, 0.5f, 0.5f), glm::vec3(0.0f, 0.0f, 1.0f)},
-
-			Vertex{glm::vec3(-0.5f, -0.5f, 0.5f), glm::vec3(0.0f, 0.0f, 1.0f)},
-			Vertex{glm::vec3(0.5f, 0.5f, 0.5f), glm::vec3(0.0f, 0.0f, 1.0f)},
-			Vertex{glm::vec3(-0.5f, 0.5f, 0.5f), glm::vec3(0.0f, 0.0f, 1.0f)},
-
-			Vertex{glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(1.0f, 0.0f, 0.0f)},
-			Vertex{glm::vec3(0.5f, -0.5f, -0.5f), glm::vec3(1.0f, 0.0f, 0.0f)},
-			Vertex{glm::vec3(0.5f, 0.5f, -0.5f), glm::vec3(1.0f, 0.0f, 0.0f)},
-
-			Vertex{glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(1.0f, 0.0f, 0.0f)},
-			Vertex{glm::vec3(0.5f, 0.5f, -0.5f), glm::vec3(1.0f, 0.0f, 0.0f)},
-			Vertex{glm::vec3(-0.5f, 0.5f, -0.5f), glm::vec3(1.0f, 0.0f, 0.0f)},
-
-			Vertex{glm::vec3(0.5f, -0.5f, -0.5f), glm::vec3(0.0f, 1.0f, 0.0f)},
-			Vertex{glm::vec3(0.5f, 0.5f, -0.5f), glm::vec3(0.0f, 1.0f, 0.0f)},
-			Vertex{glm::vec3(0.5f, 0.5f, 0.5f), glm::vec3(0.0f, 1.0f, 0.0f)},
-
-			Vertex{glm::vec3(0.5f, -0.5f, -0.5f), glm::vec3(0.0f, 1.0f, 0.0f)},
-			Vertex{glm::vec3(0.5f, 0.5f, 0.5f), glm::vec3(0.0f, 1.0f, 0.0f)},
-			Vertex{glm::vec3(0.5f, -0.5f, 0.5f), glm::vec3(0.0f, 1.0f, 0.0f)},
-
-			Vertex{glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(1.0f, 1.0f, 0.0f)},
-			Vertex{glm::vec3(-0.5f, 0.5f, -0.5f), glm::vec3(1.0f, 1.0f, 0.0f)},
-			Vertex{glm::vec3(-0.5f, 0.5f, 0.5f), glm::vec3(1.0f, 1.0f, 0.0f)},
-
-			Vertex{glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(1.0f, 1.0f, 0.0f)},
-			Vertex{glm::vec3(-0.5f, 0.5f, 0.5f), glm::vec3(1.0f, 1.0f, 0.0f)},
-			Vertex{glm::vec3(-0.5f, -0.5f, 0.5f), glm::vec3(1.0f, 1.0f, 0.0f)},
-
-			Vertex{glm::vec3(-0.5f, 0.5f, -0.5f), glm::vec3(1.0f, 0.0f, 1.0f)},
-			Vertex{glm::vec3(0.5f, 0.5f, -0.5f), glm::vec3(1.0f, 0.0f, 1.0f)},
-			Vertex{glm::vec3(0.5f, 0.5f, 0.5f), glm::vec3(1.0f, 0.0f, 1.0f)},
-
-			Vertex{glm::vec3(-0.5f, 0.5f, -0.5f), glm::vec3(1.0f, 0.0f, 1.0f)},
-			Vertex{glm::vec3(0.5f, 0.5f, 0.5f), glm::vec3(1.0f, 0.0f, 1.0f)},
-			Vertex{glm::vec3(-0.5f, 0.5f, 0.5f), glm::vec3(1.0f, 0.0f, 1.0f)},
-
-			Vertex{glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(0.0f, 1.0f, 1.0f)},
-			Vertex{glm::vec3(0.5f, -0.5f, -0.5f), glm::vec3(0.0f, 1.0f, 1.0f)},
-			Vertex{glm::vec3(0.5f, -0.5f, 0.5f), glm::vec3(0.0f, 1.0f, 1.0f)},
-
-			Vertex{glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(0.0f, 1.0f, 1.0f)},
-			Vertex{glm::vec3(0.5f, -0.5f, 0.5f), glm::vec3(0.0f, 1.0f, 1.0f)},
-			Vertex{glm::vec3(-0.5f, -0.5f, 0.5f), glm::vec3(0.0f, 1.0f, 1.0f)} };
-
-		auto mesh = std::make_shared<Mesh>(verts);
-
-		scene.AddObject(mesh);
-
-		auto object1 = make_unique<SceneObject>(mesh);
-		object1->physics.SetPosition(glm::vec3(1.0f, 1.0f, 1.0f));
-		object1->SetName("Cube");
-		scene.AddObject(std::move(object1));
+		auto cube = std::make_unique<SceneObject>(MeshLibrary::GetMesh("Cube"));
+		cube->SetName("Cube");
+		scene.AddObject(std::move(cube));
 	}
 
 	{
-		std::vector<Vertex> floorVerts = {
-			Vertex{glm::vec3(-0.5f, 0.0f, -0.5f), glm::vec3(0.0f, 1.0f, 0.0f)},
-			Vertex{glm::vec3(0.5f, 0.0f, -0.5f), glm::vec3(0.0f, 1.0f, 0.0f)},
-			Vertex{glm::vec3(0.5f, 0.0f, 0.5f), glm::vec3(0.0f, 1.0f, 0.0f)},
-			Vertex{glm::vec3(-0.5f, 0.0f, 0.5f), glm::vec3(0.0f, 1.0f, 0.0f)},
-		};
+		// TODO: Scene::CreateBorders();
+		// Scene borders
+		auto sceneVerts = MeshLibrary::GetMesh("Cube")->GetVertices();
+		auto sceneIndices = MeshLibrary::GetMesh("Cube")->GetIndices();
 
-		for (auto& v : floorVerts)
+		for (auto& v : sceneVerts)
 		{
 			v.position *= 10.0f;
+			v.color = glm::vec3(1.0f, 0.0f, 0.0f);
 		}
 
-		std::vector<GLuint> floorIndices = {
-			0, 1, 2,
-			0, 2, 3
-		};
+		//MeshLibrary::AddMesh("SceneBorders", std::make_shared<Mesh>(sceneVerts, sceneIndices));
+		auto mesh = std::make_shared<Mesh>(sceneVerts, sceneIndices);
+		mesh->SetDrawMode(GL_LINES);
 
-		auto floorMesh = make_shared<Mesh>(floorVerts, floorIndices);
-		auto floorObject = make_unique<SceneObject>(floorMesh);
-		floorObject->physics.SetPosition(glm::vec3(0.0f, -1.0f, 0.0f));
-		floorObject->SetName("Floor");
-		scene.AddObject(std::move(floorObject));
+		auto borders = std::make_unique<SceneObject>(mesh);
+		borders->physics.SetGravityEnabled(false);
+		borders->SetName("Borders");
+		scene.AddObject(std::move(borders));
 	}
 }
 

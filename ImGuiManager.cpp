@@ -31,9 +31,9 @@ void ImGuiManager::Render(Scene& scene, Camera& camera)
 				{
 					// Properties
 					ImGui::SeparatorText("Properties");
-					ImGui::Checkbox("Gravity", &scene.gravityEnabled);
-					float* gravity[3] = { &scene.gravity.x, &scene.gravity.y, &scene.gravity.z };
-					ImGui::DragFloat3("Gravity vector", *gravity, 0.1f);
+					ImGui::Checkbox("Enable global gravity", &scene.globalGravityEnabled);
+					float* gravity[3] = { &scene.globalGravity.x, &scene.globalGravity.y, &scene.globalGravity.z };
+					ImGui::DragFloat3("Global gravity", *gravity, 0.1f);
 
 					
 					// Add new object
@@ -69,6 +69,7 @@ void ImGuiManager::Render(Scene& scene, Camera& camera)
 						{
 							// Properties
 							ImGui::SeparatorText("Properties");
+
 							ImGui::DragFloat("Mass", &object->physics.mass, 0.1f, 0.1f, 1000000.0f);
 							if (ImGui::IsItemHovered())
 							{
@@ -92,6 +93,10 @@ void ImGuiManager::Render(Scene& scene, Camera& camera)
 								ImGui::Text("Affects on position: x = x0 + vt");
 								ImGui::EndTooltip();
 							}
+							
+							ImGui::Checkbox("Enable gravity", &object->physics.gravityEnabled);
+
+							// TODO: remove
 							if (ImGui::Button("Reset"))
 							{
 								object->physics.mass = 1.0f;
