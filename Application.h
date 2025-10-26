@@ -27,6 +27,7 @@ private:
 	ImGuiManager imguiManager;
 	TimeManager timeManager;
 
+	PhysicsEngine physicsEngine;
 	Camera camera;
 	Renderer renderer;
 

@@ -16,6 +16,8 @@ public:
 
 	void Draw(Shader& shader, const glm::mat4& model, const glm::mat4& viewProjection);
 
+	void SetGlobalColor(const glm::vec3& color);
+
 	friend class ImGuiManager;
 
 public:

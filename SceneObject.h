@@ -15,6 +15,7 @@ public:
 
 public:
 	void SetName(const std::string& name);
+    void SetMesh(std::shared_ptr<Mesh> newMesh);
 
     const glm::mat4& GetModelMatrix() const;
     std::shared_ptr<Mesh> GetMesh() const;

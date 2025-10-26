@@ -39,7 +39,10 @@ std::shared_ptr<Mesh> MeshLibrary::GetMesh(const std::string& name)
 	return m_Meshes[name];
 }
 
-void MeshLibrary::AddMesh(const std::string& name, std::shared_ptr<Mesh> mesh)
+std::shared_ptr<Mesh> MeshLibrary::AddMesh(const std::string& name, std::shared_ptr<Mesh> mesh)
 {
 	m_Meshes[name] = std::move(mesh);
+	return m_Meshes[name];
 }
+
+std::unordered_map<std::string, std::shared_ptr<Mesh>>& MeshLibrary::GetAllMeshes() { return m_Meshes; }

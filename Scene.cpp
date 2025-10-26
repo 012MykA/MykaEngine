@@ -1,7 +1,6 @@
 #include "Scene.h"
 
-Scene::Scene(Renderer& renderer, Camera& camera)
-    : renderer(renderer), camera(camera) {}
+Scene::Scene(PhysicsEngine& physicsEngine, Renderer& renderer, Camera& camera) : physicsEngine(physicsEngine), renderer(renderer), camera(camera) {}
 
 SceneObject& Scene::AddObject(std::shared_ptr<Mesh> mesh)
 {
@@ -11,6 +10,7 @@ SceneObject& Scene::AddObject(std::shared_ptr<Mesh> mesh)
 
 SceneObject& Scene::AddObject(std::unique_ptr<SceneObject> object)
 {
+    physicsEngine.AddObject(&(*object).physics);
     objects.push_back(std::move(object));
     return *objects.back();
 }
@@ -22,14 +22,7 @@ std::vector<std::unique_ptr<SceneObject>>& Scene::GetObjects()
 
 void Scene::Update(float deltaTime)
 {
-    for (auto& obj : objects)
-    {
-        if (globalGravityEnabled && obj->physics.GetGravityEnabled())
-        {
-            obj->physics.Accelerate(globalGravity);
-        }
-        obj->Update(deltaTime);
-    }
+    physicsEngine.Update(deltaTime);
 }
 
 void Scene::Render()

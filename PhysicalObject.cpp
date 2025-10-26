@@ -25,7 +25,10 @@ void PhysicalObject::Update(float deltaTime)
 	UpdateModelMatrix();
 }
 
+
 // SET
+void PhysicalObject::SetAABB(const AABB& aabb) { localAABB = aabb; }
+
 void PhysicalObject::SetPosition(const glm::vec3& pos) { position = pos; }
 
 void PhysicalObject::SetVelocity(const glm::vec3& vel) { velocity = vel; }
@@ -35,6 +38,13 @@ void PhysicalObject::SetGravityEnabled(bool enabled) { gravityEnabled = enabled;
 void PhysicalObject::SetMass(float m) { mass = m; }
 
 // GET
+const AABB& PhysicalObject::GetLocalAABB() const { return localAABB; }
+
+AABB PhysicalObject::GetWorldAABB() const
+{
+	return { localAABB.min + position, localAABB.max + position };
+}
+
 const glm::mat4& PhysicalObject::GetModelMatrix() const { return modelMatrix; }
 
 const glm::vec3& PhysicalObject::GetPosition() const { return position; }

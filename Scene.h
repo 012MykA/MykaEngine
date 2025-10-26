@@ -1,15 +1,17 @@
 #pragma once
 
 #include "Renderer.h"
+#include "PhysicsEngine.h"
 #include "Camera.h"
 #include "SceneObject.h"
+
 #include <vector>
 #include <memory>
 
 class Scene
 {
 public:
-    Scene(Renderer& renderer, Camera& camera);
+    Scene(PhysicsEngine& physicsEngine, Renderer& renderer, Camera& camera);
 
     void Update(float deltaTime);
     void Render();
@@ -22,12 +24,9 @@ public:
     std::vector<std::unique_ptr<SceneObject>>& GetObjects();
 
 private:
+	PhysicsEngine& physicsEngine;
     Renderer& renderer;
     Camera& camera;
 
     std::vector<std::unique_ptr<SceneObject>> objects;
-
-    glm::vec3 globalGravity = glm::vec3(0.0f, -9.81f, 0.0f);
-	bool globalGravityEnabled = false;
 };
-

@@ -15,6 +15,11 @@ void SceneObject::Draw(Shader& shader, const glm::mat4& viewProjection)
 
 void SceneObject::SetName(const std::string& name) { this->name = name; }
 
+void SceneObject::SetMesh(std::shared_ptr<Mesh> newMesh)
+{
+	mesh.swap(newMesh);
+}
+
 const glm::mat4& SceneObject::GetModelMatrix() const { return physics.GetModelMatrix(); }
 
 std::shared_ptr<Mesh> SceneObject::GetMesh() const { return mesh; }

@@ -3,7 +3,8 @@
 #define WINDOW_WIDTH 1920
 #define WINDOW_HEIGHT 1080
 
-Application::Application() : camera(WINDOW_WIDTH, WINDOW_HEIGHT, glm::vec3(0.0f, 0.0f, 3.0f)), scene(renderer, camera), timeManager()
+
+Application::Application() : camera(WINDOW_WIDTH, WINDOW_HEIGHT, glm::vec3(0.0f, 0.0f, 3.0f)), scene(physicsEngine, renderer, camera), timeManager()
 {
 	glfwInit();
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
@@ -31,26 +32,32 @@ Application::Application() : camera(WINDOW_WIDTH, WINDOW_HEIGHT, glm::vec3(0.0f,
 	}
 
 	{
-		// TODO: Scene::CreateBorders();
-		// Scene borders
-		auto sceneVerts = MeshLibrary::GetMesh("Cube")->GetVertices();
-		auto sceneIndices = MeshLibrary::GetMesh("Cube")->GetIndices();
-
-		for (auto& v : sceneVerts)
-		{
-			v.position *= 10.0f;
-			v.color = glm::vec3(1.0f, 0.0f, 0.0f);
-		}
-
-		//MeshLibrary::AddMesh("SceneBorders", std::make_shared<Mesh>(sceneVerts, sceneIndices));
-		auto mesh = std::make_shared<Mesh>(sceneVerts, sceneIndices);
-		mesh->SetDrawMode(GL_LINES);
-
-		auto borders = std::make_unique<SceneObject>(mesh);
-		borders->physics.SetGravityEnabled(false);
-		borders->SetName("Borders");
-		scene.AddObject(std::move(borders));
+		auto cube = std::make_unique<SceneObject>(MeshLibrary::GetMesh("Cube"));
+		cube->SetName("Cube");
+		cube->physics.SetPosition(glm::vec3(0.0f, 0.0f, 2.0f));
+		scene.AddObject(std::move(cube));
 	}
+
+	//{
+	//	// TODO: Scene::CreateBorders();
+	//	// Scene borders
+	//	auto sceneVerts = MeshLibrary::GetMesh("Cube")->GetVertices();
+	//	auto sceneIndices = MeshLibrary::GetMesh("Cube")->GetIndices();
+
+	//	for (auto& v : sceneVerts)
+	//	{
+	//		v.position *= 10.0f;
+	//		v.color = glm::vec3(1.0f, 0.0f, 0.0f);
+	//	}
+
+	//	auto mesh = std::make_shared<Mesh>(sceneVerts, sceneIndices);
+	//	mesh->SetDrawMode(GL_LINES);
+
+	//	auto borders = std::make_unique<SceneObject>(mesh);
+	//	borders->physics.SetGravityEnabled(false);
+	//	borders->SetName("Borders");
+	//	scene.AddObject(std::move(borders));
+	//}
 }
 
 Application::~Application()

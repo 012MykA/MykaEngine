@@ -51,6 +51,17 @@ void Mesh::Draw(Shader& shader, const glm::mat4& model, const glm::mat4& viewPro
 	VAO.Unbind();
 }
 
+void Mesh::SetGlobalColor(const glm::vec3& color)
+{
+	for (auto& vertex : vertices)
+	{
+		vertex.color = color;
+	}
+	VBO.Bind();
+	VBO.BufferData(vertices);
+	VBO.Unbind();
+}
+
 void Mesh::SetVertices(const std::vector<Vertex>& vertices) { this->vertices = vertices; }
 
 void Mesh::SetIndices(const std::vector<GLuint>& indices) { this->indices = indices; }

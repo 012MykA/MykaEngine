@@ -108,6 +108,9 @@
     <ClCompile Include="MeshLibrary.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
+    <ClCompile Include="PhysicsEngine.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Libraries\include\imgui\imconfig.h">
@@ -177,6 +180,9 @@
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
     <ClInclude Include="MeshLibrary.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="PhysicsEngine.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
   </ItemGroup>
