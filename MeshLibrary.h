@@ -13,7 +13,9 @@ public:
 
 	static std::shared_ptr<Mesh> AddMesh(const std::string& name, std::shared_ptr<Mesh> mesh);
 
-	static std::unordered_map<std::string, std::shared_ptr<Mesh>>& GetAllMeshes();
+	static std::unordered_map<std::string, std::shared_ptr<Mesh>> GetAllMeshes();
+
+	static std::unordered_map<std::string, std::shared_ptr<Mesh>>& GetAllMeshesRef();
 
 private:
 	static std::unordered_map<std::string, std::shared_ptr<Mesh>> m_Meshes;

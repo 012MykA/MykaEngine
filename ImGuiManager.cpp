@@ -79,8 +79,6 @@ void ImGuiManager::Render(Scene& scene, Camera& camera)
 								ImGui::EndTooltip();
 							}
 
-							static bool changed = false;
-
 							// Position
 							ImGui::SeparatorText("Kinematics");
 							float* position[3] = { &object->physics.position.x, &object->physics.position.y, &object->physics.position.z };
@@ -112,104 +110,138 @@ void ImGuiManager::Render(Scene& scene, Camera& camera)
 								ImGui::EndTooltip();
 							}
 
-							ImGui::SeparatorText("Render");
+							// Mesh
+							ImGui::SeparatorText("Objects mesh");
 
-							ImGui::BulletText("Using Mesh: %s", object->GetMesh()->GetName().c_str());
+							std::vector<std::string> meshNames;
 
-							ImGui::Spacing();
-
-							glm::vec3 vertColor = object->GetMesh()->GetVertices().back().color;
-							float color[3] = { vertColor.x, vertColor.y, vertColor.z };
-							if (ImGui::ColorEdit3("Object color", color))
+							for (auto pair : MeshLibrary::GetAllMeshes())
 							{
-								object->GetMesh()->SetGlobalColor(glm::vec3(color[0], color[1], color[2]));
-
-								changed = true;
+								meshNames.push_back(pair.first);
 							}
 
-							if (ImGui::TreeNode("Vertices"))
+							auto currentMeshIter = std::find(meshNames.begin(), meshNames.end(), object->GetMesh()->GetName());
+
+							int currentMeshIndex = -1;
+							if (currentMeshIter != meshNames.end())
+								currentMeshIndex = std::distance(meshNames.begin(), currentMeshIter);
+
+							const char* preview_value = meshNames[currentMeshIndex].c_str();
+							if (ImGui::BeginCombo("##Mesh", preview_value))
 							{
-								size_t vertexIndex = 0;
-								for (auto& vertex : object->GetMesh()->vertices)
+								for (int n = 0; n < meshNames.size(); n++)
 								{
-									std::string vertexName = "Vertex " + std::to_string(vertexIndex);
-									ImGui::SeparatorText(vertexName.c_str());
+									bool is_selected = (currentMeshIndex == n);
 
-									// ID
-									std::string ID = "##" + std::to_string(objectIndex) + std::to_string(vertexIndex);
-									ImGui::PushID(ID.c_str());
-
-									// Position
-									float* position[3] = { &vertex.position.x, &vertex.position.y, &vertex.position.z };
-									if (ImGui::DragFloat3("Position", *position, 0.01f))
-										changed = true;
-
-									// Color
-									float* color[3] = { &vertex.color.x, &vertex.color.y, &vertex.color.z };
-									if (ImGui::ColorEdit3("Color", *color))
-										changed = true;
-
-									ImGui::PopID();
-
-									vertexIndex++;
-								}
-
-								ImGui::TreePop();
-							}
-
-							ImGui::Spacing();
-
-							// Update - Create mesh
-							if (ImGui::Button("Update Mesh") && changed)
-							{
-								object->GetMesh()->VBO.Bind();
-								object->GetMesh()->VBO.BufferData(object->GetMesh()->vertices);
-								object->GetMesh()->VBO.Unbind();
-
-								changed = false;
-							}
-
-							ImGui::SameLine();
-
-							if (ImGui::Button("New Mesh"))
-								ImGui::OpenPopup("CreateNewMesh");
-
-							ImVec2 center = ImGui::GetMainViewport()->GetCenter();
-							ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
-
-							if (ImGui::BeginPopupModal("CreateNewMesh", NULL, ImGuiWindowFlags_AlwaysAutoResize))
-							{
-								static char meshName[128] = "";
-								ImGui::InputTextWithHint("Mesh name", "Enter mesh name", meshName, IM_ARRAYSIZE(meshName));
-
-								if (ImGui::Button("OK", ImVec2(120, 0)))
-								{
-									if (std::string(meshName).empty() == false)
+									if (ImGui::Selectable(meshNames[n].c_str(), is_selected))
 									{
-										std::shared_ptr<Mesh> newMesh = std::make_shared<Mesh>(object->GetMesh()->GetVertices(), object->GetMesh()->GetIndices());
+										currentMeshIndex = n;
 
-										newMesh->VBO.Bind();
-										newMesh->VBO.BufferData(newMesh->vertices);
-										newMesh->VBO.Unbind();
+										auto mesh = MeshLibrary::GetMesh(meshNames[n]);
 
-										MeshLibrary::AddMesh((std::string)meshName, newMesh);
-
-
-										object->SetMesh(MeshLibrary::GetMesh((std::string)meshName));
-
-										changed = false;
-
-										ImGui::CloseCurrentPopup();
+										object->SetMesh(mesh);
 									}
+
+									if (is_selected)
+										ImGui::SetItemDefaultFocus();
 								}
-
-								ImGui::SetItemDefaultFocus();
-								ImGui::SameLine();
-
-								if (ImGui::Button("Cancel", ImVec2(120, 0)))
-									ImGui::CloseCurrentPopup();
-								ImGui::EndPopup();
+								ImGui::EndCombo();
 							}
+
+							//ImGui::BulletText("Using Mesh: %s", object->GetMesh()->GetName().c_str());
+
+							//glm::vec3 vertColor = object->GetMesh()->GetVertices().back().color;
+							//float color[3] = { vertColor.x, vertColor.y, vertColor.z };
+							//if (ImGui::ColorEdit3("Object color", color))
+							//{
+							//	object->GetMesh()->SetGlobalColor(glm::vec3(color[0], color[1], color[2]));
+
+							//	changed = true;
+							//}
+
+							//if (ImGui::TreeNode("Vertices"))
+							//{
+							//	size_t vertexIndex = 0;
+							//	for (auto& vertex : object->GetMesh()->vertices)
+							//	{
+							//		std::string vertexName = "Vertex " + std::to_string(vertexIndex);
+							//		ImGui::SeparatorText(vertexName.c_str());
+
+							//		// ID
+							//		std::string ID = "##" + std::to_string(objectIndex) + std::to_string(vertexIndex);
+							//		ImGui::PushID(ID.c_str());
+
+							//		// Position
+							//		float* position[3] = { &vertex.position.x, &vertex.position.y, &vertex.position.z };
+							//		if (ImGui::DragFloat3("Position", *position, 0.01f))
+							//			changed = true;
+
+							//		// Color
+							//		float* color[3] = { &vertex.color.x, &vertex.color.y, &vertex.color.z };
+							//		if (ImGui::ColorEdit3("Color", *color))
+							//			changed = true;
+
+							//		ImGui::PopID();
+
+							//		vertexIndex++;
+							//	}
+
+							//	ImGui::TreePop();
+							//}
+
+							//ImGui::Spacing();
+
+							//// Update - Create mesh
+							//if (ImGui::Button("Update Mesh") && changed)
+							//{
+							//	object->GetMesh()->VBO.Bind();
+							//	object->GetMesh()->VBO.BufferData(object->GetMesh()->vertices);
+							//	object->GetMesh()->VBO.Unbind();
+
+							//	changed = false;
+							//}
+
+							//ImGui::SameLine();
+
+							//if (ImGui::Button("New Mesh"))
+							//	ImGui::OpenPopup("CreateNewMesh");
+
+							//ImVec2 center = ImGui::GetMainViewport()->GetCenter();
+							//ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
+
+							//if (ImGui::BeginPopupModal("CreateNewMesh", NULL, ImGuiWindowFlags_AlwaysAutoResize))
+							//{
+							//	static char meshName[128] = "";
+							//	ImGui::InputTextWithHint("Mesh name", "Enter mesh name", meshName, IM_ARRAYSIZE(meshName));
+
+							//	if (ImGui::Button("OK", ImVec2(120, 0)))
+							//	{
+							//		if (std::string(meshName).empty() == false)
+							//		{
+							//			std::shared_ptr<Mesh> newMesh = std::make_shared<Mesh>(object->GetMesh()->GetVertices(), object->GetMesh()->GetIndices());
+
+							//			newMesh->VBO.Bind();
+							//			newMesh->VBO.BufferData(newMesh->vertices);
+							//			newMesh->VBO.Unbind();
+
+							//			MeshLibrary::AddMesh((std::string)meshName, newMesh);
+
+
+							//			object->SetMesh(MeshLibrary::GetMesh((std::string)meshName));
+
+							//			changed = false;
+
+							//			ImGui::CloseCurrentPopup();
+							//		}
+							//	}
+
+							//	ImGui::SetItemDefaultFocus();
+							//	ImGui::SameLine();
+
+							//	if (ImGui::Button("Cancel", ImVec2(120, 0)))
+							//		ImGui::CloseCurrentPopup();
+							//	ImGui::EndPopup();
+							//}
 							// ---
 
 							ImGui::TreePop();
@@ -222,6 +254,51 @@ void ImGuiManager::Render(Scene& scene, Camera& camera)
 
 				if (ImGui::BeginTabItem("Meshes"))
 				{
+					// Create
+					ImGui::SeparatorText("Create Mesh");
+
+					if (ImGui::Button("New Mesh"))
+						ImGui::OpenPopup("CreateNewMesh");
+
+					ImVec2 center = ImGui::GetMainViewport()->GetCenter();
+					ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
+
+					if (ImGui::BeginPopupModal("CreateNewMesh", NULL, ImGuiWindowFlags_AlwaysAutoResize))
+					{
+						static char meshName[128] = "";
+						ImGui::InputTextWithHint("Mesh name", "Enter mesh name", meshName, IM_ARRAYSIZE(meshName));
+
+						if (ImGui::Button("OK", ImVec2(120, 0)))
+						{
+							if (std::string(meshName).empty() == false)
+							{
+								/*std::shared_ptr<Mesh> newMesh = std::make_shared<Mesh>(object->GetMesh()->GetVertices(), object->GetMesh()->GetIndices());
+
+								newMesh->VBO.Bind();
+								newMesh->VBO.BufferData(newMesh->vertices);
+								newMesh->VBO.Unbind();
+
+								MeshLibrary::AddMesh((std::string)meshName, newMesh);
+
+
+								object->SetMesh(MeshLibrary::GetMesh((std::string)meshName));
+
+								changed = false;*/
+
+								ImGui::CloseCurrentPopup();
+							}
+						}
+
+						ImGui::SetItemDefaultFocus();
+						ImGui::SameLine();
+
+						if (ImGui::Button("Cancel", ImVec2(120, 0)))
+							ImGui::CloseCurrentPopup();
+						ImGui::EndPopup();
+					}
+
+
+					// All
 					ImGui::SeparatorText("Meshes");
 					size_t meshIndex = 0;
 					for (const auto& [name, mesh] : MeshLibrary::GetAllMeshes())
