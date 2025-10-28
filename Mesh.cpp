@@ -66,8 +66,12 @@ void Mesh::SetVertices(const std::vector<Vertex>& vertices) { this->vertices = v
 
 void Mesh::SetIndices(const std::vector<GLuint>& indices) { this->indices = indices; }
 
+void Mesh::SetName(const std::string& name) { this->name = name; }
+
 void Mesh::SetDrawMode(GLenum mode) { this->drawMode = mode; }
 
 std::vector<Vertex> Mesh::GetVertices() const { return vertices; }
 
 std::vector<GLuint> Mesh::GetIndices() const { return indices; }
+
+std::string Mesh::GetName() const { return name; }

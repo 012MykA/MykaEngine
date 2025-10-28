@@ -79,8 +79,8 @@
     <LibraryPath>C:\Users\Vova\source\repos\MykaEngine\Libraries\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>C:\Users\Vova\source\repos\MykaEngine\Libraries\include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Users\Vova\source\repos\MykaEngine\Libraries\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\Users\alesh\source\repos\012MykA\MykaEngine\Libraries\include;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Users\alesh\source\repos\012MykA\MykaEngine\Libraries\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <IncludePath>C:\Users\Vova\source\repos\MykaEngine\Libraries\include;$(IncludePath)</IncludePath>

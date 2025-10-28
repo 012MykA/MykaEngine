@@ -2,8 +2,8 @@
 
 Renderer::Renderer()
     : viewProjection(glm::mat4(1.0f)),
-      defaultShader("C:/Users/Vova/source/repos/MykaEngine 2.0/defaultVert.glsl",
-                    "C:/Users/Vova/source/repos/MykaEngine 2.0/defaultFrag.glsl") {}
+      defaultShader("C:/Users/alesh/source/repos/012MykA/MykaEngine/defaultVert.glsl",
+                    "C:/Users/alesh/source/repos/012MykA/MykaEngine/defaultFrag.glsl") {}
 
 void Renderer::BeginScene(Camera& camera)
 {

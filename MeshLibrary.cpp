@@ -26,6 +26,7 @@ static std::shared_ptr<Mesh> CreateCubeMesh()
 	};
 
 	std::shared_ptr<Mesh> mesh = std::make_shared<Mesh>(vertices, indices);
+	mesh->SetName("Cube");
 	return mesh;
 }
 
@@ -34,13 +35,11 @@ void MeshLibrary::Initialize()
 	m_Meshes["Cube"] = CreateCubeMesh();
 }
 
-std::shared_ptr<Mesh> MeshLibrary::GetMesh(const std::string& name)
-{
-	return m_Meshes[name];
-}
+std::shared_ptr<Mesh> MeshLibrary::GetMesh(const std::string& name) { return m_Meshes[name]; }
 
 std::shared_ptr<Mesh> MeshLibrary::AddMesh(const std::string& name, std::shared_ptr<Mesh> mesh)
 {
+	mesh->SetName(name);
 	m_Meshes[name] = std::move(mesh);
 	return m_Meshes[name];
 }

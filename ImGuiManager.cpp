@@ -80,14 +80,6 @@ void ImGuiManager::Render(Scene& scene, Camera& camera)
 							}
 
 							static bool changed = false;
-							static glm::vec3 vertColor = object->GetMesh()->GetVertices().back().color;
-							static float color[3] = { vertColor.x, vertColor.y, vertColor.z };
-							if (ImGui::ColorEdit3("Object color", color))
-							{
-								object->GetMesh()->SetGlobalColor(glm::vec3(color[0], color[1], color[2]));
-
-								changed = true;
-							}
 
 							// Position
 							ImGui::SeparatorText("Kinematics");
@@ -110,16 +102,29 @@ void ImGuiManager::Render(Scene& scene, Camera& camera)
 							// TODO: remove
 							if (ImGui::Button("Reset"))
 							{
-								object->physics.mass = 1.0f;
 								object->physics.position = glm::vec3(0.0f);
 								object->physics.velocity = glm::vec3(0.0f);
-								object->physics.acceleration = glm::vec3(0.0f);
 							}
 							if (ImGui::IsItemHovered())
 							{
 								ImGui::BeginTooltip();
 								ImGui::Text("Resets whole object");
 								ImGui::EndTooltip();
+							}
+
+							ImGui::SeparatorText("Render");
+
+							ImGui::BulletText("Using Mesh: %s", object->GetMesh()->GetName().c_str());
+
+							ImGui::Spacing();
+
+							glm::vec3 vertColor = object->GetMesh()->GetVertices().back().color;
+							float color[3] = { vertColor.x, vertColor.y, vertColor.z };
+							if (ImGui::ColorEdit3("Object color", color))
+							{
+								object->GetMesh()->SetGlobalColor(glm::vec3(color[0], color[1], color[2]));
+
+								changed = true;
 							}
 
 							if (ImGui::TreeNode("Vertices"))
@@ -149,57 +154,63 @@ void ImGuiManager::Render(Scene& scene, Camera& camera)
 									vertexIndex++;
 								}
 
-								if (ImGui::Button("Update Mesh") && changed)
-								{
-									object->GetMesh()->VBO.Bind();
-									object->GetMesh()->VBO.BufferData(object->GetMesh()->vertices);
-									object->GetMesh()->VBO.Unbind();
-
-									changed = false;
-								}
-
-								ImGui::SameLine();
-
-								if (ImGui::Button("New Mesh"))
-									ImGui::OpenPopup("CreateNewMesh");
-
-								ImVec2 center = ImGui::GetMainViewport()->GetCenter();
-								ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
-
-								if (ImGui::BeginPopupModal("CreateNewMesh", NULL, ImGuiWindowFlags_AlwaysAutoResize))
-								{
-									static char meshName[128] = "";
-									ImGui::InputTextWithHint("Mesh name", "Enter mesh name", meshName, IM_ARRAYSIZE(meshName));
-
-									if (ImGui::Button("OK", ImVec2(120, 0)))
-									{
-										if (std::string(meshName).empty() == false)
-										{
-											std::shared_ptr<Mesh> newMesh = std::make_shared<Mesh>(object->GetMesh()->GetVertices(), object->GetMesh()->GetIndices());
-
-											newMesh->VBO.Bind();
-											newMesh->VBO.BufferData(newMesh->vertices);
-											newMesh->VBO.Unbind();
-
-											MeshLibrary::AddMesh((std::string)meshName, newMesh);
-
-
-											object->SetMesh(MeshLibrary::GetMesh((std::string)meshName));
-
-											ImGui::CloseCurrentPopup();
-										}
-									}
-
-									ImGui::SetItemDefaultFocus();
-									ImGui::SameLine();
-
-									if (ImGui::Button("Cancel", ImVec2(120, 0)))
-										ImGui::CloseCurrentPopup();
-									ImGui::EndPopup();
-								}
-
 								ImGui::TreePop();
 							}
+
+							ImGui::Spacing();
+
+							// Update - Create mesh
+							if (ImGui::Button("Update Mesh") && changed)
+							{
+								object->GetMesh()->VBO.Bind();
+								object->GetMesh()->VBO.BufferData(object->GetMesh()->vertices);
+								object->GetMesh()->VBO.Unbind();
+
+								changed = false;
+							}
+
+							ImGui::SameLine();
+
+							if (ImGui::Button("New Mesh"))
+								ImGui::OpenPopup("CreateNewMesh");
+
+							ImVec2 center = ImGui::GetMainViewport()->GetCenter();
+							ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
+
+							if (ImGui::BeginPopupModal("CreateNewMesh", NULL, ImGuiWindowFlags_AlwaysAutoResize))
+							{
+								static char meshName[128] = "";
+								ImGui::InputTextWithHint("Mesh name", "Enter mesh name", meshName, IM_ARRAYSIZE(meshName));
+
+								if (ImGui::Button("OK", ImVec2(120, 0)))
+								{
+									if (std::string(meshName).empty() == false)
+									{
+										std::shared_ptr<Mesh> newMesh = std::make_shared<Mesh>(object->GetMesh()->GetVertices(), object->GetMesh()->GetIndices());
+
+										newMesh->VBO.Bind();
+										newMesh->VBO.BufferData(newMesh->vertices);
+										newMesh->VBO.Unbind();
+
+										MeshLibrary::AddMesh((std::string)meshName, newMesh);
+
+
+										object->SetMesh(MeshLibrary::GetMesh((std::string)meshName));
+
+										changed = false;
+
+										ImGui::CloseCurrentPopup();
+									}
+								}
+
+								ImGui::SetItemDefaultFocus();
+								ImGui::SameLine();
+
+								if (ImGui::Button("Cancel", ImVec2(120, 0)))
+									ImGui::CloseCurrentPopup();
+								ImGui::EndPopup();
+							}
+							// ---
 
 							ImGui::TreePop();
 						}
@@ -219,8 +230,8 @@ void ImGuiManager::Render(Scene& scene, Camera& camera)
 						if (ImGui::TreeNode(meshName.c_str()))
 						{
 							bool changed = false;
-							static glm::vec3 vertColor = mesh->GetVertices().back().color;
-							static float color[3] = { vertColor.x, vertColor.y, vertColor.z };
+							glm::vec3 vertColor = mesh->GetVertices().back().color;
+							float color[3] = { vertColor.x, vertColor.y, vertColor.z };
 							if (ImGui::ColorEdit3("Object color", color))
 							{
 								mesh->SetGlobalColor(glm::vec3(color[0], color[1], color[2]));

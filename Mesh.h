@@ -23,15 +23,18 @@ public:
 public:
 	void SetVertices(const std::vector<Vertex>& vertices);
 	void SetIndices(const std::vector<GLuint>& indices);
+	void SetName(const std::string& name);
 	void SetDrawMode(GLenum mode);
 
 	std::vector<Vertex> GetVertices() const;
 	std::vector<GLuint> GetIndices() const;
+	std::string GetName() const;
 
 private:
 	GLenum drawMode = GL_TRIANGLES;
 	std::vector<Vertex> vertices;
 	std::vector<GLuint> indices;
+	std::string name;
 
 	VertexArray VAO;
 	VertexBuffer VBO;
