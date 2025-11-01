@@ -39,20 +39,57 @@ void ImGuiManager::Render(Scene& scene, Camera& camera)
 
 					// Add new object
 					ImGui::SeparatorText("Add new Object");
-					std::vector<std::string> shapes = { "Cube", "Sphere" };
-					static int current_shape = 0;
-					const char* preview_value = shapes[current_shape].c_str();
-					if (ImGui::BeginCombo("Shape", preview_value))
+
+					static char objectName[128] = "New SceneObject";
+					static int current_mesh_index = 0; // Для выбора Mesh
+					std::vector<std::string> meshNames;
+
+					for (auto& pair : MeshLibrary::GetAllMeshes())
 					{
-						for (int n = 0; n < shapes.size(); n++)
+						meshNames.push_back(pair.first);
+					}
+
+					ImGui::InputText("Object name", objectName, IM_ARRAYSIZE(objectName));
+
+					if (!meshNames.empty())
+					{
+						const char* preview_value = meshNames[current_mesh_index].c_str();
+
+						if (ImGui::BeginCombo("Mesh for new object", preview_value))
 						{
-							bool is_selected = (current_shape == n);
-							if (ImGui::Selectable(shapes[n].c_str(), is_selected))
-								current_shape = n;
-							if (is_selected)
-								ImGui::SetItemDefaultFocus();
+							for (int n = 0; n < meshNames.size(); n++)
+							{
+								bool is_selected = (current_mesh_index == n);
+								if (ImGui::Selectable(meshNames[n].c_str(), is_selected))
+									current_mesh_index = n;
+								if (is_selected)
+									ImGui::SetItemDefaultFocus();
+							}
+							ImGui::EndCombo();
 						}
-						ImGui::EndCombo();
+
+						if (ImGui::Button("Create New Object"))
+						{
+							std::shared_ptr<Mesh> mesh = MeshLibrary::GetMesh(meshNames[current_mesh_index]);
+
+							// 3. Создание нового объекта, установка имени и добавление в сцену
+							std::unique_ptr<SceneObject> newObject = std::make_unique<SceneObject>(mesh);
+
+							// Убедимся, что имя не пустое
+							std::string finalName = (std::string)objectName;
+							if (finalName.empty())
+								finalName = "UnnamedObject";
+
+							newObject->SetName(finalName);
+
+							scene.AddObject(std::move(newObject));
+							
+							objectName[0] = '\0';
+						}
+					}
+					else
+					{
+						ImGui::Text("No meshes available. Create a mesh first.");
 					}
 
 					ImGui::EndTabItem();
@@ -111,7 +148,7 @@ void ImGuiManager::Render(Scene& scene, Camera& camera)
 							}
 
 							// Mesh
-							ImGui::SeparatorText("Objects mesh");
+							ImGui::SeparatorText("Using mesh");
 
 							std::vector<std::string> meshNames;
 
@@ -148,101 +185,27 @@ void ImGuiManager::Render(Scene& scene, Camera& camera)
 								ImGui::EndCombo();
 							}
 
-							//ImGui::BulletText("Using Mesh: %s", object->GetMesh()->GetName().c_str());
+							ImGui::SeparatorText("Resize");
 
-							//glm::vec3 vertColor = object->GetMesh()->GetVertices().back().color;
-							//float color[3] = { vertColor.x, vertColor.y, vertColor.z };
-							//if (ImGui::ColorEdit3("Object color", color))
-							//{
-							//	object->GetMesh()->SetGlobalColor(glm::vec3(color[0], color[1], color[2]));
+							static glm::vec3 scaleVector = glm::vec3(1.0f);
+							float scale[3] = { scaleVector.x, scaleVector.y, scaleVector.z };
 
-							//	changed = true;
-							//}
+							// Начинаем с 1.0, чтобы сохранить текущий размер.
+							if (ImGui::DragFloat3("Scale (X, Y, Z)", scale, 0.01f, 0.01f, 10.0f))
+							{
+								// Обновляем вектор масштаба при изменении
+								scaleVector = glm::vec3(scale[0], scale[1], scale[2]);
+							}
 
-							//if (ImGui::TreeNode("Vertices"))
-							//{
-							//	size_t vertexIndex = 0;
-							//	for (auto& vertex : object->GetMesh()->vertices)
-							//	{
-							//		std::string vertexName = "Vertex " + std::to_string(vertexIndex);
-							//		ImGui::SeparatorText(vertexName.c_str());
+							object->physics.ApplyAABBScale(scaleVector);
+							object->GetMesh()->ApplyScale(scaleVector);
 
-							//		// ID
-							//		std::string ID = "##" + std::to_string(objectIndex) + std::to_string(vertexIndex);
-							//		ImGui::PushID(ID.c_str());
+							// Обновляем VBO
+							object->GetMesh()->VBO.Bind();
+							object->GetMesh()->VBO.BufferData(object->GetMesh()->GetVertices());
+							object->GetMesh()->VBO.Unbind();
 
-							//		// Position
-							//		float* position[3] = { &vertex.position.x, &vertex.position.y, &vertex.position.z };
-							//		if (ImGui::DragFloat3("Position", *position, 0.01f))
-							//			changed = true;
-
-							//		// Color
-							//		float* color[3] = { &vertex.color.x, &vertex.color.y, &vertex.color.z };
-							//		if (ImGui::ColorEdit3("Color", *color))
-							//			changed = true;
-
-							//		ImGui::PopID();
-
-							//		vertexIndex++;
-							//	}
-
-							//	ImGui::TreePop();
-							//}
-
-							//ImGui::Spacing();
-
-							//// Update - Create mesh
-							//if (ImGui::Button("Update Mesh") && changed)
-							//{
-							//	object->GetMesh()->VBO.Bind();
-							//	object->GetMesh()->VBO.BufferData(object->GetMesh()->vertices);
-							//	object->GetMesh()->VBO.Unbind();
-
-							//	changed = false;
-							//}
-
-							//ImGui::SameLine();
-
-							//if (ImGui::Button("New Mesh"))
-							//	ImGui::OpenPopup("CreateNewMesh");
-
-							//ImVec2 center = ImGui::GetMainViewport()->GetCenter();
-							//ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
-
-							//if (ImGui::BeginPopupModal("CreateNewMesh", NULL, ImGuiWindowFlags_AlwaysAutoResize))
-							//{
-							//	static char meshName[128] = "";
-							//	ImGui::InputTextWithHint("Mesh name", "Enter mesh name", meshName, IM_ARRAYSIZE(meshName));
-
-							//	if (ImGui::Button("OK", ImVec2(120, 0)))
-							//	{
-							//		if (std::string(meshName).empty() == false)
-							//		{
-							//			std::shared_ptr<Mesh> newMesh = std::make_shared<Mesh>(object->GetMesh()->GetVertices(), object->GetMesh()->GetIndices());
-
-							//			newMesh->VBO.Bind();
-							//			newMesh->VBO.BufferData(newMesh->vertices);
-							//			newMesh->VBO.Unbind();
-
-							//			MeshLibrary::AddMesh((std::string)meshName, newMesh);
-
-
-							//			object->SetMesh(MeshLibrary::GetMesh((std::string)meshName));
-
-							//			changed = false;
-
-							//			ImGui::CloseCurrentPopup();
-							//		}
-							//	}
-
-							//	ImGui::SetItemDefaultFocus();
-							//	ImGui::SameLine();
-
-							//	if (ImGui::Button("Cancel", ImVec2(120, 0)))
-							//		ImGui::CloseCurrentPopup();
-							//	ImGui::EndPopup();
-							//}
-							// ---
+							scaleVector = glm::vec3(1.0f);
 
 							ImGui::TreePop();
 						}
@@ -254,7 +217,6 @@ void ImGuiManager::Render(Scene& scene, Camera& camera)
 
 				if (ImGui::BeginTabItem("Meshes"))
 				{
-					// Create
 					ImGui::SeparatorText("Create Mesh");
 
 					if (ImGui::Button("New Mesh"))
@@ -266,26 +228,76 @@ void ImGuiManager::Render(Scene& scene, Camera& camera)
 					if (ImGui::BeginPopupModal("CreateNewMesh", NULL, ImGuiWindowFlags_AlwaysAutoResize))
 					{
 						static char meshName[128] = "";
-						ImGui::InputTextWithHint("Mesh name", "Enter mesh name", meshName, IM_ARRAYSIZE(meshName));
+						static int base_mesh_index = 0;
 
-						if (ImGui::Button("OK", ImVec2(120, 0)))
+						std::vector<std::string> meshNames;
+
+						for (const auto& pair : MeshLibrary::GetAllMeshes())
 						{
-							if (std::string(meshName).empty() == false)
+							meshNames.push_back(pair.first);
+						}
+
+						ImGui::InputTextWithHint("New Mesh name", "Enter unique name", meshName, IM_ARRAYSIZE(meshName));
+
+						ImGui::Separator();
+
+						if (!meshNames.empty())
+						{
+							if (base_mesh_index >= meshNames.size()) base_mesh_index = 0;
+
+							const char* preview_base_mesh = meshNames[base_mesh_index].c_str();
+							if (ImGui::BeginCombo("Base Mesh to Duplicate", preview_base_mesh))
 							{
-								/*std::shared_ptr<Mesh> newMesh = std::make_shared<Mesh>(object->GetMesh()->GetVertices(), object->GetMesh()->GetIndices());
+								for (int n = 0; n < meshNames.size(); n++)
+								{
+									bool is_selected = (base_mesh_index == n);
+									if (ImGui::Selectable(meshNames[n].c_str(), is_selected))
+										base_mesh_index = n;
+									if (is_selected)
+										ImGui::SetItemDefaultFocus();
+								}
+								ImGui::EndCombo();
+							}
+							if (ImGui::IsItemHovered())
+							{
+								ImGui::BeginTooltip();
+								ImGui::Text("The new mesh will be a copy of the selected base mesh.");
+								ImGui::EndTooltip();
+							}
+						}
+						else
+						{
+							ImGui::TextColored(ImVec4(1.0f, 0.0f, 0.0f, 1.0f), "No existing meshes to duplicate.");
+						}
 
-								newMesh->VBO.Bind();
-								newMesh->VBO.BufferData(newMesh->vertices);
-								newMesh->VBO.Unbind();
+						ImGui::Separator();
 
-								MeshLibrary::AddMesh((std::string)meshName, newMesh);
+						if (ImGui::Button("Create", ImVec2(120, 0)))
+						{
+							std::string name = (std::string)meshName;
+							bool can_create = !name.empty() && !meshNames.empty();
 
+							if (can_create)
+							{
+								std::shared_ptr<Mesh> baseMesh = MeshLibrary::GetMesh(meshNames[base_mesh_index]);
 
-								object->SetMesh(MeshLibrary::GetMesh((std::string)meshName));
+								if (baseMesh)
+								{
+									std::vector<Vertex> vertices = baseMesh->GetVertices();
+									std::vector<GLuint> indices = baseMesh->GetIndices();
 
-								changed = false;*/
+									std::shared_ptr<Mesh> newMesh;
+									if (indices.empty())
+										newMesh = std::make_shared<Mesh>(vertices);
+									else
+										newMesh = std::make_shared<Mesh>(vertices, indices);
 
-								ImGui::CloseCurrentPopup();
+									newMesh->SetName(name);
+									MeshLibrary::AddMesh(name, newMesh);
+
+									meshName[0] = '\0';
+									ImGui::CloseCurrentPopup();
+								}
 							}
 						}
 
@@ -293,10 +305,12 @@ void ImGuiManager::Render(Scene& scene, Camera& camera)
 						ImGui::SameLine();
 
 						if (ImGui::Button("Cancel", ImVec2(120, 0)))
+						{
+							meshName[0] = '\0';
 							ImGui::CloseCurrentPopup();
+						}
 						ImGui::EndPopup();
-					}
-
+					}					
 
 					// All
 					ImGui::SeparatorText("Meshes");
@@ -333,6 +347,12 @@ void ImGuiManager::Render(Scene& scene, Camera& camera)
 									float* position[3] = { &vertex.position.x, &vertex.position.y, &vertex.position.z };
 									if (ImGui::DragFloat3("Position", *position, 0.01f))
 										changed = true;
+									if (ImGui::IsItemHovered())
+									{
+										ImGui::BeginTooltip();
+										ImGui::Text("Use with caution");
+										ImGui::EndTooltip();
+									}
 
 									// Color
 									float* color[3] = { &vertex.color.x, &vertex.color.y, &vertex.color.z };
@@ -354,6 +374,8 @@ void ImGuiManager::Render(Scene& scene, Camera& camera)
 							}
 
 							ImGui::Text("Indices count: %d", mesh->GetIndices().size());
+
+
 							ImGui::TreePop();
 						}
 						meshIndex++;

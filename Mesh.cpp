@@ -62,6 +62,14 @@ void Mesh::SetGlobalColor(const glm::vec3& color)
 	VBO.Unbind();
 }
 
+void Mesh::ApplyScale(const glm::vec3& scale)
+{
+	for (auto& v : vertices)
+	{
+		v.position *= scale;
+	}
+}
+
 void Mesh::SetVertices(const std::vector<Vertex>& vertices) { this->vertices = vertices; }
 
 void Mesh::SetIndices(const std::vector<GLuint>& indices) { this->indices = indices; }

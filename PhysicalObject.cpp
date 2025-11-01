@@ -25,6 +25,11 @@ void PhysicalObject::Update(float deltaTime)
 	UpdateModelMatrix();
 }
 
+void PhysicalObject::ApplyAABBScale(const glm::vec3& scale)
+{
+	localAABB.min *= scale;
+	localAABB.max *= scale;
+}
 
 // SET
 void PhysicalObject::SetAABB(const AABB& aabb) { localAABB = aabb; }
@@ -34,6 +39,8 @@ void PhysicalObject::SetPosition(const glm::vec3& pos) { position = pos; }
 void PhysicalObject::SetVelocity(const glm::vec3& vel) { velocity = vel; }
 
 void PhysicalObject::SetGravityEnabled(bool enabled) { gravityEnabled = enabled; }
+
+void PhysicalObject::SetImmovable(bool immovable) { this->immovable = immovable; }
 
 void PhysicalObject::SetMass(float m) { mass = m; }
 

@@ -18,6 +18,7 @@ public:
 	void Accelerate(const glm::vec3& acceleration);
 
 	void Update(float deltaTime);
+	void ApplyAABBScale(const glm::vec3& scale);
 
 	friend class ImGuiManager;
 
@@ -28,6 +29,7 @@ public:
 	void SetPosition(const glm::vec3& pos);
 	void SetVelocity(const glm::vec3& vel);
 	void SetGravityEnabled(bool enabled);
+	void SetImmovable(bool immovable);
 	void SetMass(float m);
 
 	// Get
@@ -43,6 +45,7 @@ public:
 private:
 	// --- Collision ---
 	AABB localAABB = { glm::vec3(-0.5f), glm::vec3(0.5f) };
+	bool immovable = false;
 
 	// --- Kinematics ---
 	glm::vec3 position = glm::vec3(0.0f);
