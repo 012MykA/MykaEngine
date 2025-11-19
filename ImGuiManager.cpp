@@ -261,7 +261,7 @@ void ImGuiManager::Render(Scene& scene, Camera& camera)
 							if (base_mesh_index >= meshNames.size()) base_mesh_index = 0;
 
 							const char* preview_base_mesh = meshNames[base_mesh_index].c_str();
-							if (ImGui::BeginCombo("Base Mesh to Duplicate", preview_base_mesh))
+							if (ImGui::BeginCombo("Base Mesh", preview_base_mesh))
 							{
 								for (int n = 0; n < meshNames.size(); n++)
 								{

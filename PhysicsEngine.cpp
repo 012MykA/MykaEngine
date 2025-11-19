@@ -126,6 +126,6 @@ void PhysicsEngine::HandleCollision(PhysicalObject* objA, PhysicalObject* objB)
 	glm::vec3 v1Final = (v1 * (m1 - m2) + 2.0f * m2 * v2) / (m1 + m2);
 	glm::vec3 v2Final = (v2 * (m2 - m1) + 2.0f * m1 * v1) / (m1 + m2);
 
-	objA->SetVelocity(v1Final * objA->GetElasticity());
-	objB->SetVelocity(v2Final * objB->GetElasticity());
+	objA->SetVelocity(v1Final/* * objA->GetElasticity()*/);
+	objB->SetVelocity(v2Final/* * objB->GetElasticity()*/);
 }

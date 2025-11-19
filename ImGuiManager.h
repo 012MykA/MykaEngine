@@ -22,4 +22,7 @@ public:
 
 private:
 	bool show_main_window = true;
+
+	bool window_auto_resize = false;
+	bool vSyncEnabled = true;
 };
