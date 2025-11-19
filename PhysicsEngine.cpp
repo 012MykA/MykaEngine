@@ -76,10 +76,43 @@ void PhysicsEngine::HandleCollision(PhysicalObject* objA, PhysicalObject* objB)
         mtv.z = signZ * dz;
     }
 
+    bool immA = objA->GetImmovable();
+    bool immB = objB->GetImmovable();
+
+    if (immA && immB)
+        return;
+
+    if (immA && !immB)
+    {
+        objB->SetPosition(objB->GetPosition() - mtv);
+        objB->Update(0.0f);
+
+        glm::vec3 v2 = objB->GetVelocity();
+        if (mtv.x != 0.0f) v2.x = -v2.x;
+        if (mtv.y != 0.0f) v2.y = -v2.y;
+        if (mtv.z != 0.0f) v2.z = -v2.z;
+        objB->SetVelocity(v2);
+
+        return;
+    }
+
+    if (!immA && immB)
+    {
+        objA->SetPosition(objA->GetPosition() + mtv);
+        objA->Update(0.0f);
+
+        glm::vec3 v1 = objA->GetVelocity();
+        if (mtv.x != 0.0f) v1.x = -v1.x;
+        if (mtv.y != 0.0f) v1.y = -v1.y;
+        if (mtv.z != 0.0f) v1.z = -v1.z;
+        objA->SetVelocity(v1);
+
+        return;
+    }
+
     objA->SetPosition(objA->GetPosition() + mtv * 0.5f);
     objB->SetPosition(objB->GetPosition() - mtv * 0.5f);
 
-	// Update positions
     objA->Update(0.0f);
     objB->Update(0.0f);
 
@@ -93,6 +126,6 @@ void PhysicsEngine::HandleCollision(PhysicalObject* objA, PhysicalObject* objB)
 	glm::vec3 v1Final = (v1 * (m1 - m2) + 2.0f * m2 * v2) / (m1 + m2);
 	glm::vec3 v2Final = (v2 * (m2 - m1) + 2.0f * m1 * v1) / (m1 + m2);
 
-	objA->SetVelocity(v1Final);
-	objB->SetVelocity(v2Final);
+	objA->SetVelocity(v1Final * objA->GetElasticity());
+	objB->SetVelocity(v2Final * objB->GetElasticity());
 }

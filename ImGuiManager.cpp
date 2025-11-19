@@ -112,6 +112,7 @@ void ImGuiManager::Render(Scene& scene, Camera& camera)
 								ImGui::Text("Affects on acceleration: F = ma => a = F / m");
 								ImGui::EndTooltip();
 							}
+							ImGui::DragFloat("Elasticity", &object->physics.elasticity, 0.01f, 0.0f, 1.0f);
 
 							// Position
 							ImGui::SeparatorText("Kinematics");
@@ -130,6 +131,15 @@ void ImGuiManager::Render(Scene& scene, Camera& camera)
 							}
 
 							ImGui::Checkbox("Enable gravity", &object->physics.gravityEnabled);
+
+							// Immovable checkbox
+							ImGui::Checkbox("Immovable", &object->physics.immovable);
+							if (ImGui::IsItemHovered())
+							{
+								ImGui::BeginTooltip();
+								ImGui::Text("When enabled, object ignores forces, gravity and won't be moved by collisions.");
+								ImGui::EndTooltip();
+							}
 
 							if (ImGui::Button("Reset"))
 							{

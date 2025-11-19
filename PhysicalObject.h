@@ -31,6 +31,7 @@ public:
 	void SetGravityEnabled(bool enabled);
 	void SetImmovable(bool immovable);
 	void SetMass(float m);
+	void SetElasticity(float r);
 
 	// Get
 	const AABB& GetLocalAABB() const;
@@ -40,7 +41,9 @@ public:
 	const glm::vec3& GetPosition() const;
 	const glm::vec3& GetVelocity() const;
 	bool GetGravityEnabled() const;
+	bool GetImmovable() const;
 	float GetMass() const;
+	float GetElasticity() const;
 
 private:
 	// --- Collision ---
@@ -57,6 +60,7 @@ private:
 
 	// --- Properties ---
 	float mass = 1.0f;
+	float elasticity = 1.0f;
 
 	// --- Matrix ---
 	glm::mat4 modelMatrix = glm::mat4(1.0f);

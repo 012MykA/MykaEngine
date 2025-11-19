@@ -4,16 +4,27 @@
 void PhysicalObject::ApplyForce(const glm::vec3& force)
 {
 	// F = ma	=>	a = F / m
+	if (immovable) return;
 	acceleration += force / mass;
 }
 
 void PhysicalObject::Accelerate(const glm::vec3& acceleration)
 {
+	if (immovable) return;
 	this->acceleration += acceleration;
 }
 
 void PhysicalObject::Update(float deltaTime)
 {
+	if (immovable)
+	{
+		// Не позволяем не-движимым объектам двигаться или накапливать ускорение
+		velocity = glm::vec3(0.0f);
+		acceleration = glm::vec3(0.0f);
+		UpdateModelMatrix();
+		return;
+	}
+
 	// v = v0 + at	=>	v += at
 	velocity += acceleration * deltaTime;
 
@@ -44,6 +55,8 @@ void PhysicalObject::SetImmovable(bool immovable) { this->immovable = immovable;
 
 void PhysicalObject::SetMass(float m) { mass = m; }
 
+void PhysicalObject::SetElasticity(float elasticity) { this->elasticity = elasticity; }
+
 // GET
 const AABB& PhysicalObject::GetLocalAABB() const { return localAABB; }
 
@@ -60,7 +73,11 @@ const glm::vec3& PhysicalObject::GetVelocity() const { return velocity; }
 
 bool PhysicalObject::GetGravityEnabled() const { return gravityEnabled; }
 
+bool PhysicalObject::GetImmovable() const { return immovable; }
+
 float PhysicalObject::GetMass() const { return mass; }
+
+float PhysicalObject::GetElasticity() const { return elasticity; }
 
 
 void PhysicalObject::UpdateModelMatrix()
