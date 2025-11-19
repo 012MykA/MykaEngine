@@ -29,7 +29,6 @@ void ImGuiManager::Render(Scene& scene, Camera& camera)
 			{
 				if (ImGui::BeginTabItem("Scene"))
 				{
-					// TODO: remove friend classes at all
 					// Properties
 					ImGui::SeparatorText("Properties");
 					ImGui::Checkbox("Enable global gravity", &scene.physicsEngine.globalGravityEnabled);
@@ -40,8 +39,8 @@ void ImGuiManager::Render(Scene& scene, Camera& camera)
 					// Add new object
 					ImGui::SeparatorText("Add new Object");
 
-					static char objectName[128] = "New SceneObject";
-					static int current_mesh_index = 0; // Для выбора Mesh
+					static char objectName[128] = "";
+					static int current_mesh_index = 0;
 					std::vector<std::string> meshNames;
 
 					for (auto& pair : MeshLibrary::GetAllMeshes())
@@ -72,10 +71,8 @@ void ImGuiManager::Render(Scene& scene, Camera& camera)
 						{
 							std::shared_ptr<Mesh> mesh = MeshLibrary::GetMesh(meshNames[current_mesh_index]);
 
-							// 3. Создание нового объекта, установка имени и добавление в сцену
 							std::unique_ptr<SceneObject> newObject = std::make_unique<SceneObject>(mesh);
 
-							// Убедимся, что имя не пустое
 							std::string finalName = (std::string)objectName;
 							if (finalName.empty())
 								finalName = "UnnamedObject";
@@ -119,7 +116,7 @@ void ImGuiManager::Render(Scene& scene, Camera& camera)
 							// Position
 							ImGui::SeparatorText("Kinematics");
 							float* position[3] = { &object->physics.position.x, &object->physics.position.y, &object->physics.position.z };
-							ImGui::DragFloat3("Position", *position, 0.1f); // TODO: add limits
+							ImGui::DragFloat3("Position", *position, 0.1f);
 							ImGui::Separator();
 
 							// Velocity
@@ -134,7 +131,6 @@ void ImGuiManager::Render(Scene& scene, Camera& camera)
 
 							ImGui::Checkbox("Enable gravity", &object->physics.gravityEnabled);
 
-							// TODO: remove
 							if (ImGui::Button("Reset"))
 							{
 								object->physics.position = glm::vec3(0.0f);
@@ -187,23 +183,32 @@ void ImGuiManager::Render(Scene& scene, Camera& camera)
 
 							ImGui::SeparatorText("Resize");
 
+							float objectScale[3] = {object->physics.GetLocalAABB().max.x - object->physics.GetLocalAABB().min.x,
+												  object->physics.GetLocalAABB().max.y - object->physics.GetLocalAABB().min.y,
+												  object->physics.GetLocalAABB().max.z - object->physics.GetLocalAABB().min.z };
+							if (ImGui::DragFloat3("Object Scale", objectScale));
+							if (ImGui::IsItemHovered())
+							{
+								ImGui::BeginTooltip();
+								ImGui::Text("To change Scale use drag bellow");
+								ImGui::EndTooltip();
+							}
+
+
 							static glm::vec3 scaleVector = glm::vec3(1.0f);
 							float scale[3] = { scaleVector.x, scaleVector.y, scaleVector.z };
 
-							// Начинаем с 1.0, чтобы сохранить текущий размер.
 							if (ImGui::DragFloat3("Scale (X, Y, Z)", scale, 0.01f, 0.01f, 10.0f))
 							{
-								// Обновляем вектор масштаба при изменении
 								scaleVector = glm::vec3(scale[0], scale[1], scale[2]);
+
+								object->physics.ApplyAABBScale(scaleVector);
+								object->GetMesh()->ApplyScale(scaleVector);
+
+								object->GetMesh()->VBO.Bind();
+								object->GetMesh()->VBO.BufferData(object->GetMesh()->GetVertices());
+								object->GetMesh()->VBO.Unbind();
 							}
-
-							object->physics.ApplyAABBScale(scaleVector);
-							object->GetMesh()->ApplyScale(scaleVector);
-
-							// Обновляем VBO
-							object->GetMesh()->VBO.Bind();
-							object->GetMesh()->VBO.BufferData(object->GetMesh()->GetVertices());
-							object->GetMesh()->VBO.Unbind();
 
 							scaleVector = glm::vec3(1.0f);
 
@@ -312,7 +317,7 @@ void ImGuiManager::Render(Scene& scene, Camera& camera)
 						ImGui::EndPopup();
 					}					
 
-					// All
+					// Meshes
 					ImGui::SeparatorText("Meshes");
 					size_t meshIndex = 0;
 					for (const auto& [name, mesh] : MeshLibrary::GetAllMeshes())
@@ -385,6 +390,12 @@ void ImGuiManager::Render(Scene& scene, Camera& camera)
 
 				if (ImGui::BeginTabItem("Camera"))
 				{
+					// Position
+					ImGui::SeparatorText("Kinematics");
+					float* position[3] = { &camera.m_Position.x, &camera.m_Position.y, &camera.m_Position.z };
+					ImGui::DragFloat3("Position", *position, 0.1f);
+					ImGui::Separator();
+
 					ImGui::SeparatorText("Properties");
 					ImGui::DragFloat("FOV", &camera.m_FOV, 1.0f, 50.0f, 110.0f);
 					ImGui::DragFloat("Render distance", &camera.m_Far, 1.0f, 1.0f, 1000000.0f);

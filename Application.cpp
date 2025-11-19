@@ -24,6 +24,15 @@ Application::Application() : camera(WINDOW_WIDTH, WINDOW_HEIGHT, glm::vec3(0.0f,
 	imguiManager.Initialize(window);
 
 	glEnable(GL_DEPTH_TEST);
+
+	
+	{
+		std::unique_ptr<SceneObject> Cube = std::make_unique< SceneObject>(MeshLibrary::GetMesh("Cube"));
+		Cube->SetName("Cube");
+		Cube->physics.SetPosition(glm::vec3(0.0f, 2.0f, 0.0f));
+
+		scene.AddObject(std::move(Cube));
+	}
 }
 
 Application::~Application()
