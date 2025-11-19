@@ -10,6 +10,7 @@
 #include "TimeManager.h"
 #include "ImGuiManager.h"
 #include "MeshLibrary.h"
+#include "Deps.h"
 
 class Application
 {
@@ -22,6 +23,7 @@ public:
 private:
 	void OnUpdate();
 	void PollEvents(float deltaTime);
+	static void FramebufferSizeCallback(GLFWwindow* window, int width, int height);
 
 	GLFWwindow* window;
 	ImGuiManager imguiManager;

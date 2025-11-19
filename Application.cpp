@@ -1,9 +1,5 @@
 #include "Application.h"
 
-#define WINDOW_WIDTH 1920
-#define WINDOW_HEIGHT 1080
-
-
 Application::Application() : camera(WINDOW_WIDTH, WINDOW_HEIGHT, glm::vec3(0.0f, 0.0f, 3.0f)), scene(physicsEngine, renderer, camera), timeManager()
 {
 	glfwInit();
@@ -11,13 +7,16 @@ Application::Application() : camera(WINDOW_WIDTH, WINDOW_HEIGHT, glm::vec3(0.0f,
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-	window = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "Simulation", NULL, NULL);
+	window = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "Simulation <MykaEngine>", NULL, NULL);
 	if (window == nullptr)
 	{
 		std::cout << "Failed to create window" << std::endl;
 		glfwTerminate();
 	}
 	glfwMakeContextCurrent(window);
+	if (CONTEXT_AUTO_RESIZE)
+		glfwSetFramebufferSizeCallback(window, FramebufferSizeCallback);
+
 	gladLoadGL();
 
 	MeshLibrary::Initialize();
@@ -76,6 +75,11 @@ void Application::PollEvents(float deltaTime)
 
 	imguiManager.PollEvents();
 	camera.Inputs(window, deltaTime);
+}
+
+void Application::FramebufferSizeCallback(GLFWwindow* window, int width, int height)
+{
+	glViewport(0, 0, width, height);
 }
 
 void Application::Run()
