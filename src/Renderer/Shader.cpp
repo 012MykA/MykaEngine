@@ -19,12 +19,12 @@ namespace MykaEngine
         glUseProgram(m_Program);
     }
 
-    void Shader::setUniform3f(const std::string &name, const glm::vec3 &value) const
+    void Shader::setUniform3f(const std::string &name, const glm::vec3 &value)
     {
         glUniform3f(getUniformLocation(name), value.x, value.y, value.z);
     }
 
-    void Shader::setUniform1i(const std::string &name, float value) const
+    void Shader::setUniform1i(const std::string &name, float value)
     {
         glUniform1i(getUniformLocation(name), value);
     }
@@ -84,9 +84,19 @@ namespace MykaEngine
         glDeleteShader(fs);
     }
 
-    GLuint Shader::getUniformLocation(const std::string &name) const
+    GLint Shader::getUniformLocation(const std::string &name)
     {
-        return glGetUniformLocation(m_Program, name.c_str());
+        if (m_UniformLocationCache.find(name) != m_UniformLocationCache.end())
+        {
+            return m_UniformLocationCache[name];
+        }
+        GLint location = glGetUniformLocation(m_Program, name.c_str());
+        if (location == -1)
+        {
+            std::cerr << "failed to find uniform" << name << std::endl;
+        }
+        m_UniformLocationCache[name] = location;
+        return location;
     }
 
     std::string Shader::getFileContent(const std::string &path)

@@ -13,7 +13,9 @@ int main()
 {
     try
     {
-        MykaWindow window(800, 600, "Simulation");
+        MykaWindow window(800, 600, "MykaEngine");
+
+        glEnable(GL_BLEND);
         
         Renderer renderer;
         Shader shader("E:/vscode/MykaEngine/shaders/defaultVert.glsl", "E:/vscode/MykaEngine/shaders/defaultFrag.glsl");
