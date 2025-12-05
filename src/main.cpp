@@ -16,7 +16,7 @@ int main()
         MykaWindow window(800, 600, "Simulation");
         
         Renderer renderer;
-        Shader shader(MykaDefaultShaderData::vertexData, MykaDefaultShaderData::fragmentData, false);
+        Shader shader("E:/vscode/MykaEngine/shaders/defaultVert.glsl", "E:/vscode/MykaEngine/shaders/defaultFrag.glsl");
         
         std::vector<Vertex> vertices = {
             Vertex{{-0.5f, -0.5f, 0.0f}, {0.0f, 0.0f}},

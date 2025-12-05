@@ -2,18 +2,10 @@
 
 namespace MykaEngine
 {
-    Shader::Shader(const std::string &vertex, const std::string &fragment, bool usePath)
+    Shader::Shader(const std::string &vertexPath, const std::string &fragmentPath)
     {
-        if (usePath)
-        {
-            this->m_VertexData = getFileContent(vertex);
-            this->m_FragmentData = getFileContent(fragment);
-        }
-        else
-        {
-            this->m_VertexData = vertex;
-            this->m_FragmentData = fragment;
-        }
+        this->m_VertexData = getFileContent(vertexPath);
+        this->m_FragmentData = getFileContent(fragmentPath);
         compileShaders();
     }
 
@@ -99,34 +91,18 @@ namespace MykaEngine
 
     std::string Shader::getFileContent(const std::string &path)
     {
-        std::string fileContent;
-        std::ifstream fileStream;
+        std::ifstream file(path);
 
-        // Включаем возможность выбрасывать исключения для объектов потоков файлов
-        fileStream.exceptions(std::ifstream::failbit | std::ifstream::badbit);
-
-        try
+        if (!file.is_open())
         {
-            // Открытие файла
-            fileStream.open(path);
-            std::stringstream fileStringStream;
-
-            // Чтение содержимого файлового буфера в поток
-            fileStringStream << fileStream.rdbuf();
-
-            // Закрытие файлового обработчика
-            fileStream.close();
-
-            // Преобразование потока в строку и возврат
-            fileContent = fileStringStream.str();
-        }
-        catch (std::ifstream::failure &e)
-        {
-            // Вывод ошибки и завершение работы, если не удалось прочитать файл
-            std::cerr << "ERROR::SHADER::FILE_NOT_SUCCESSFULLY_READ (" << path << "): " << e.what() << std::endl;
-            // Можно выбросить исключение или вернуть пустую строку, в данном случае возвращаем пустую строку.
+            std::cerr << "failed to open file: " << path << std::endl;
             return "";
         }
-        return fileContent;
+        std::stringstream buffer;
+        buffer << file.rdbuf();
+
+        file.close();
+
+        return buffer.str();
     }
 } // namespace MykaEngine
