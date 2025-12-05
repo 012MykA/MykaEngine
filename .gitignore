@@ -1,0 +1,11 @@
+# CMake build folder
+build/
+
+# VS Code
+.vscode/
+
+# Libraries
+libs/
+
+# https://github.com/012MykA/mykacopy
+mykacopy.exe

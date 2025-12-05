@@ -1,0 +1,28 @@
+#pragma once
+#include "Shader.hpp"
+#include "Texture.hpp"
+
+#include <glm/glm.hpp>
+
+// std
+#include <memory>
+
+namespace MykaEngine
+{
+    class Material
+    {
+    public:
+        Material(std::shared_ptr<Shader> shader);
+
+    public:
+        void SetColor(const glm::vec3& color);
+
+    private:
+        std::shared_ptr<Shader> m_Shader;
+        std::shared_ptr<Texture> m_Texture;
+
+        float m_Ambient = 0.2f;    // Object color in dark
+        glm::vec3 m_Color = glm::vec3(1.0f, 1.0f, 1.0f);
+        float m_Specular = 0.5f;   // Smoothness
+    };
+} // namespace MykaEngine
