@@ -1,4 +1,4 @@
-#include "Material.hpp"
+#include "myka_material.hpp"
 
 namespace MykaEngine
 {

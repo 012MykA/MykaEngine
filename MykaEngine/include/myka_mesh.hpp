@@ -1,7 +1,8 @@
 #pragma once
-#include "VertexArray.hpp"
-#include "VertexBuffer.hpp"
-#include "IndexBuffer.hpp"
+
+#include "myka_vertex_array.hpp"
+#include "myka_vertex_buffer.hpp"
+#include "myka_index_buffer.hpp"
 
 // std
 #include <vector>

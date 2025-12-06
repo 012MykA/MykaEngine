@@ -1,10 +1,11 @@
 #pragma once
+
 #include <glad/glad.h>
 
-#include "Mesh.hpp"
-#include "Material.hpp"
-#include "GameObject.hpp"
-#include "Camera.hpp"
+#include "myka_mesh.hpp"
+#include "myka_material.hpp"
+#include "myka_game_object.hpp"
+#include "myka_camera.hpp"
 
 namespace MykaEngine
 {

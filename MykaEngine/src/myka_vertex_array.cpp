@@ -1,4 +1,4 @@
-#include "VertexArray.hpp"
+#include "myka_vertex_array.hpp"
 
 namespace MykaEngine
 {

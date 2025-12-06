@@ -1,4 +1,4 @@
-#include "Camera.hpp"
+#include "myka_camera.hpp"
 
 namespace MykaEngine
 {

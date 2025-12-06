@@ -7,7 +7,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#include "Timer.hpp"
+#include "myka_timer.hpp"
 
 namespace MykaEngine
 {

@@ -1,4 +1,4 @@
-#include "GameObject.hpp"
+#include "myka_game_object.hpp"
 
 namespace MykaEngine
 {

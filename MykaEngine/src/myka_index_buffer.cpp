@@ -1,4 +1,4 @@
-#include "IndexBuffer.hpp"
+#include "myka_index_buffer.hpp"
 
 namespace MykaEngine
 {

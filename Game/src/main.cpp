@@ -1,11 +1,12 @@
 #include "myka_window.hpp"
-#include "Material.hpp"
-#include "Mesh.hpp"
-#include "Renderer.hpp"
-#include "GameObject.hpp"
-#include "Camera.hpp"
+#include "myka_material.hpp"
+#include "myka_mesh.hpp"
+#include "myka_renderer.hpp"
+#include "myka_game_object.hpp"
+#include "myka_camera.hpp"
+#include "myka_timer.hpp"
+
 #include "Deps.hpp"
-#include "Timer.hpp"
 
 using namespace MykaEngine;
 

@@ -1,4 +1,4 @@
-#include "VertexBuffer.hpp"
+#include "myka_vertex_buffer.hpp"
 
 namespace MykaEngine
 {

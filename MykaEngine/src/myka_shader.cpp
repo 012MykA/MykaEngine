@@ -1,4 +1,4 @@
-#include "Shader.hpp"
+#include "myka_shader.hpp"
 
 namespace MykaEngine
 {

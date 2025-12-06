@@ -1,6 +1,7 @@
 #pragma once
-#include "Shader.hpp"
-#include "Texture.hpp"
+
+#include "myka_shader.hpp"
+#include "myka_texture.hpp"
 
 #include <glm/glm.hpp>
 

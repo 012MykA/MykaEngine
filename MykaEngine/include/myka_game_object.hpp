@@ -1,8 +1,8 @@
 #pragma once
 
-#include "Mesh.hpp"
-#include "Material.hpp"
-#include "Transform.hpp"
+#include "myka_mesh.hpp"
+#include "myka_material.hpp"
+#include "myka_transform.hpp"
 
 // std
 #include <memory>

@@ -1,4 +1,4 @@
-#include "Texture.hpp"
+#include "myka_texture.hpp"
 
 namespace MykaEngine
 {
