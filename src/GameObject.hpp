@@ -13,7 +13,14 @@ namespace MykaEngine
     class GameObject
     {
     public:
-        GameObject(std::shared_ptr<Mesh> mesh, std::shared_ptr<Material> material, const std::string& name = "GameObject");
+        GameObject(std::shared_ptr<Mesh> mesh, std::shared_ptr<Material> material, const std::string &name = "GameObject");
+
+    public:
+        std::shared_ptr<Mesh> getMesh() const;
+        std::shared_ptr<Material> getMaterial() const;
+        Transform &getTransform();
+        const Transform &getTransform() const;
+        const std::string &getName() const;
 
     private:
         std::string m_Name;

@@ -11,6 +11,13 @@ namespace MykaEngine
     public:
         Transform();
 
+    public:
+        void setPosition(const glm::vec3& position);
+        void setRotation(const glm::vec3& rotation);
+        void setScale(const glm::vec3& scale);
+
+        const glm::mat4& getModelMatrix() const;
+
     private:
         void updateModelMatrix();
 

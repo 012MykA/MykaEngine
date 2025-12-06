@@ -28,6 +28,7 @@ namespace MykaEngine
     private:
         void initWindow();
         void shutdown();
+        static void framebufferSizeCallback(GLFWwindow* window, int width, int height);
 
         std::string m_Title;
         uint32_t m_Width;

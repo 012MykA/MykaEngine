@@ -17,7 +17,7 @@ namespace MykaEngine
     public:
         void useShader() const;
         void useTexture() const;
-        void useUniforms() const;
+        void useUniforms(const glm::mat4& model, const glm::mat4& view, const glm::mat4& proj) const;
 
         void setColor(const glm::vec4& color);
 

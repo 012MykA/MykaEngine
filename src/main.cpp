@@ -71,13 +71,13 @@ int main()
         Shader shader("E:/vscode/MykaEngine/shaders/defaultVert.glsl", "E:/vscode/MykaEngine/shaders/defaultFrag.glsl");
         Texture texture("E:/vscode/MykaEngine/assets/brick.png");
         Material material(std::make_shared<Shader>(shader), std::make_shared<Texture>(texture));
-        
         GameObject gameObject(std::make_shared<Mesh>(mesh), std::make_shared<Material>(material));
+        gameObject.getTransform().setPosition(glm::vec3(0.0f, 0.0f, -2.0f));
 
-        
         Camera camera(WINDOW_WIDTH, WINDOW_HEIGHT, window.getWindow());
         
         glClearColor(0.20f, 0.20f, 0.20f, 1.0f);
+        static glm::vec3 rotation{0.0f, 0.0f, 0.0f};
         while (!window.shouldClose())
         {
             // Inputs
@@ -86,13 +86,16 @@ int main()
 
             // onUpdate
             Timer::onUpdate();
-
             camera.onUpdate();
+
+            rotation.y += 2.0f;
+            rotation.x += 1.0f;
+            gameObject.getTransform().setRotation(rotation);
 
             // onRender
             renderer.clear();
 
-            renderer.draw(mesh, material);
+            renderer.draw(gameObject, camera);
 
             window.swapBuffers();
         }

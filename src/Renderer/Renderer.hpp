@@ -3,6 +3,8 @@
 
 #include "Mesh.hpp"
 #include "Material.hpp"
+#include "../GameObject.hpp"
+#include "../Camera.hpp"
 
 namespace MykaEngine
 {
@@ -13,6 +15,6 @@ namespace MykaEngine
 
         void clear() const;
 
-        void draw(const Mesh& mesh, const Material& material) const;
+        void draw(const GameObject& object, const Camera& camera) const;
     };
 } // namespace MykaEngine

@@ -14,16 +14,8 @@ namespace MykaEngine
         m_Texture->bind(0);
     }
 
-    void Material::useUniforms() const
+    void Material::useUniforms(const glm::mat4& model, const glm::mat4& view, const glm::mat4& proj) const
     {
-        static float rotation = 1.0f;
-        rotation += 1.0f;
-
-        glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 0.0f));
-        model = glm::rotate(glm::mat4(1.0f), glm::radians(rotation), glm::vec3(0.0f, 1.0f, 0.0f));
-
-        glm::mat4 view = glm::lookAt(glm::vec3(0.0f, 0.0f, 2.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-        glm::mat4 proj = glm::perspective(glm::radians(70.0f), 800.0f / 600.0f, 0.1f, 1000.0f);
         glm::mat4 mvp = proj * view * model;
 
         m_Shader->setUniformMat4f("u_MVP", mvp);

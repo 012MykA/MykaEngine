@@ -20,6 +20,17 @@ namespace MykaEngine
     void MykaWindow::pollEvents() const
     {
         glfwPollEvents();
+
+        if (glfwGetKey(m_Window, GLFW_KEY_T) == GLFW_PRESS)
+        {
+            glEnable(GL_POLYGON_SMOOTH);
+            glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+        }
+        if (glfwGetKey(m_Window, GLFW_KEY_T) == GLFW_RELEASE)
+        {
+            glDisable(GL_POLYGON_SMOOTH);
+            glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+        }
     }
 
     void MykaWindow::swapBuffers() const
@@ -48,6 +59,7 @@ namespace MykaEngine
             throw std::runtime_error("failed to create glfw window");
         }
         glfwMakeContextCurrent(m_Window);
+        glfwSetFramebufferSizeCallback(m_Window, framebufferSizeCallback);
 
         if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
         {
@@ -56,9 +68,14 @@ namespace MykaEngine
         glViewport(0, 0, m_Width, m_Height);
     }
 
-    void MykaEngine::MykaWindow::shutdown()
+    void MykaWindow::shutdown()
     {
         glfwDestroyWindow(m_Window);
         glfwTerminate();
+    }
+
+    void MykaWindow::framebufferSizeCallback(GLFWwindow *window, int width, int height)
+    {
+        glViewport(0, 0, width, height);
     }
 } // namespace MykaEngine
