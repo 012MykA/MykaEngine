@@ -1,9 +1,8 @@
 #pragma once
 #include <glad/glad.h>
 
-#include "VertexArray.hpp"
-#include "IndexBuffer.hpp"
-#include "Shader.hpp"
+#include "Mesh.hpp"
+#include "Material.hpp"
 
 namespace MykaEngine
 {
@@ -14,6 +13,6 @@ namespace MykaEngine
 
         void clear() const;
 
-        void draw(const VertexArray &va, const IndexBuffer &ib, const Shader &shader) const;
+        void draw(const Mesh& mesh, const Material& material) const;
     };
 } // namespace MykaEngine

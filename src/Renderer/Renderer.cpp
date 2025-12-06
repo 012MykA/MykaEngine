@@ -4,20 +4,19 @@ namespace MykaEngine
 {
     void Renderer::clear() const
     {
-        glClear(GL_COLOR_BUFFER_BIT);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     }
 
-    void MykaEngine::Renderer::draw(const VertexArray &va, const IndexBuffer &ib, const Shader &shader) const
+    void Renderer::draw(const Mesh &mesh, const Material &material) const
     {
-        shader.use();
+        material.useShader();
+        material.useUniforms();
+        material.useTexture();
+        
+        mesh.bind();
 
-        va.bind();
-        ib.bind();
+        glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(mesh.getIndexCount()), GL_UNSIGNED_INT, 0);
 
-        glDrawElements(GL_TRIANGLES, ib.getCount(), GL_UNSIGNED_INT, 0);
-
-        // not necessary
-        // va.unbind();
-        // ib.unbind();
+        mesh.unbind();
     }
 } // namespace MykaEngine

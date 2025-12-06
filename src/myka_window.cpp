@@ -44,6 +44,7 @@ namespace MykaEngine
         {
             throw std::runtime_error("failed to load gl");
         }
+        glViewport(0, 0, m_Width, m_Height);
     }
 
     void MykaEngine::MykaWindow::shutdown()

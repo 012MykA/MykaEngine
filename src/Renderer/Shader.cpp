@@ -19,14 +19,19 @@ namespace MykaEngine
         glUseProgram(m_Program);
     }
 
-    void Shader::setUniform3f(const std::string &name, const glm::vec3 &value)
+    void Shader::setUniform4f(const std::string &name, const glm::vec4 &value)
     {
-        glUniform3f(getUniformLocation(name), value.x, value.y, value.z);
+        glUniform4f(getUniformLocation(name), value.x, value.y, value.z, value.w);
     }
 
-    void Shader::setUniform1i(const std::string &name, float value)
+    void Shader::setUniform1i(const std::string &name, int value)
     {
         glUniform1i(getUniformLocation(name), value);
+    }
+
+    void Shader::setUniformMat4f(const std::string &name, const glm::mat4 &matrix)
+    {
+        glUniformMatrix4fv(getUniformLocation(name), 1, GL_FALSE, glm::value_ptr(matrix));
     }
 
     void Shader::compileShaders()
@@ -93,7 +98,7 @@ namespace MykaEngine
         GLint location = glGetUniformLocation(m_Program, name.c_str());
         if (location == -1)
         {
-            std::cerr << "failed to find uniform" << name << std::endl;
+            std::cerr << "failed to find uniform: '" << name << "'" << std::endl;
         }
         m_UniformLocationCache[name] = location;
         return location;

@@ -10,7 +10,6 @@ namespace MykaEngine
     IndexBuffer::~IndexBuffer()
     {
         glDeleteBuffers(1, &m_ID);
-        this->unbind();
     }
 
     void IndexBuffer::bufferData(const std::vector<GLuint> &indices)
@@ -27,7 +26,6 @@ namespace MykaEngine
     void IndexBuffer::unbind() const
     {
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-        glBindVertexArray(0);
     }
 
     uint32_t IndexBuffer::getCount() const

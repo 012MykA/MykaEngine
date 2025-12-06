@@ -12,8 +12,13 @@ namespace MykaEngine
     {
     public:
         Mesh(const std::vector<Vertex>& vertices, const std::vector<GLuint>& indices);
+
+        void bind() const;
+        void unbind() const;
+
+        uint32_t getIndexCount() const;
         
-    public: // TODO: make private
+    private:
         std::vector<Vertex> m_Vertices;
         std::vector<GLuint> m_Indices;
 

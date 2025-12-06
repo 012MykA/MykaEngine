@@ -12,10 +12,14 @@ namespace MykaEngine
     class Material
     {
     public:
-        Material(std::shared_ptr<Shader> shader);
+        Material(std::shared_ptr<Shader> shader, std::shared_ptr<Texture> texture);
 
     public:
-        void SetColor(const glm::vec4& color);
+        void useShader() const;
+        void useTexture() const;
+        void useUniforms() const;
+
+        void setColor(const glm::vec4& color);
 
     private:
         std::shared_ptr<Shader> m_Shader;

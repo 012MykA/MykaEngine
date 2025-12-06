@@ -1,6 +1,7 @@
 #pragma once
 #include <glad/glad.h>
 #include <glm/glm.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 // std
 #include <iostream>
@@ -20,8 +21,9 @@ namespace MykaEngine
         void use() const;
 
     public:
-        void setUniform3f(const std::string &name, const glm::vec3 &value);
-        void setUniform1i(const std::string &name, float value);
+        void setUniform4f(const std::string &name, const glm::vec4 &value);
+        void setUniform1i(const std::string &name, int value);
+        void setUniformMat4f(const std::string &name, const glm::mat4& value);
 
     private:
         void compileShaders();

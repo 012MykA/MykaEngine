@@ -1,7 +1,9 @@
 #include "Texture.hpp"
+#include <iostream>
 
 namespace MykaEngine
 {
+
     Texture::Texture(const std::string &path) : m_FilePath(path)
     {
         stbi_set_flip_vertically_on_load(1);
