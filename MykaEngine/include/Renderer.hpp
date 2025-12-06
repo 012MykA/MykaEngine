@@ -3,8 +3,8 @@
 
 #include "Mesh.hpp"
 #include "Material.hpp"
-#include "../GameObject.hpp"
-#include "../Camera.hpp"
+#include "GameObject.hpp"
+#include "Camera.hpp"
 
 namespace MykaEngine
 {

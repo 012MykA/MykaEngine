@@ -5,7 +5,7 @@ build/
 .vscode/
 
 # Libraries
-libs/
+Vendor/
 
 # https://github.com/012MykA/mykacopy
 mykacopy.exe

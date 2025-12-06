@@ -1,7 +1,7 @@
 #include "myka_window.hpp"
-#include "Renderer/Material.hpp"
-#include "Renderer/Mesh.hpp"
-#include "Renderer/Renderer.hpp"
+#include "Material.hpp"
+#include "Mesh.hpp"
+#include "Renderer.hpp"
 #include "GameObject.hpp"
 #include "Camera.hpp"
 #include "Deps.hpp"
@@ -89,7 +89,6 @@ int main()
             camera.onUpdate();
 
             rotation.y += 2.0f;
-            rotation.x += 1.0f;
             gameObject.getTransform().setRotation(rotation);
 
             // onRender

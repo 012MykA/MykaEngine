@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Renderer/Mesh.hpp"
-#include "Renderer/Material.hpp"
+#include "Mesh.hpp"
+#include "Material.hpp"
 #include "Transform.hpp"
 
 // std

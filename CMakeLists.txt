@@ -1,50 +1,29 @@
 cmake_minimum_required(VERSION 3.23)
+project(MykaEngine_Project)
 
-project(MykaEngine)
-
-# ИСПРАВЛЕНО
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
-set(GLFW_DIR "${CMAKE_SOURCE_DIR}/libs/glfw-3.4" CACHE PATH "Path to the GLFW installation.")
+# Vendor
+add_subdirectory(Vendor/glm)
+add_subdirectory(Vendor/glfw-3.4)
+include_directories(Vendor/glm)
+include_directories(SYSTEM Vendor/glad/include)
+include_directories(SYSTEM Vendor/stb_image)
 
-# glm
-add_subdirectory(libs/glm)
-include_directories(libs/glm)
+set(EXTERNAL_SRC
+    Vendor/glad/src/glad.c
+    Vendor/stb_image/stb_image.c
+)
 
-add_subdirectory(libs/glfw-3.4) # glfw
+add_subdirectory(MykaEngine)
 
-# GLAD
-set(GLAD_DIR "${CMAKE_SOURCE_DIR}/libs/glad")
-include_directories(SYSTEM "${GLAD_DIR}/include")
+add_executable(MykaGame
+    Game/src/main.cpp
+    ${EXTERNAL_SRC}
+)
 
-# stb_image
-set(STB_IMAGE_DIR "${CMAKE_SOURCE_DIR}/libs/stb_image")
-include_directories(SYSTEM "${STB_IMAGE_DIR}")
-
-add_executable(MykaEngine
-    "${GLAD_DIR}/src/glad.c"
-    "${STB_IMAGE_DIR}/stb_image.c"
-    "src/main.cpp"
-
-    "src/Renderer/IndexBuffer.cpp"
-    "src/Renderer/VertexArray.cpp"
-    "src/Renderer/VertexBuffer.cpp"
-    "src/Renderer/Mesh.cpp"
-    
-    "src/Renderer/Shader.cpp"
-    "src/Renderer/Texture.cpp"
-    "src/Renderer/Material.cpp"
-    "src/Renderer/Renderer.cpp"
-
-    "src/Transform.cpp"
-    "src/GameObject.cpp"
-
-    "src/myka_window.cpp"
-    "src/Camera.cpp"
-    "src/Timer.cpp"
-    )
-
-target_link_libraries(MykaEngine PRIVATE
+target_link_libraries(MykaGame PRIVATE
+    MykaEngine
     glfw
 )
