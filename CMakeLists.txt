@@ -25,9 +25,7 @@ include_directories(SYSTEM "${STB_IMAGE_DIR}")
 add_executable(MykaEngine
     "${GLAD_DIR}/src/glad.c"
     "${STB_IMAGE_DIR}/stb_image.c"
-
     "src/main.cpp"
-    "src/myka_window.cpp"
 
     "src/Renderer/IndexBuffer.cpp"
     "src/Renderer/VertexArray.cpp"
@@ -38,7 +36,14 @@ add_executable(MykaEngine
     "src/Renderer/Texture.cpp"
     "src/Renderer/Material.cpp"
     "src/Renderer/Renderer.cpp"
-)
+
+    "src/Transform.cpp"
+    "src/GameObject.cpp"
+
+    "src/myka_window.cpp"
+    "src/Camera.cpp"
+    "src/Timer.cpp"
+    )
 
 target_link_libraries(MykaEngine PRIVATE
     glfw

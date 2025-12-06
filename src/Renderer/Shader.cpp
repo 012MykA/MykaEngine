@@ -2,7 +2,7 @@
 
 namespace MykaEngine
 {
-    Shader::Shader(const std::string &vertexPath, const std::string &fragmentPath)
+    Shader::Shader(const std::filesystem::path &vertexPath, const std::filesystem::path &fragmentPath)
     {
         this->m_VertexData = getFileContent(vertexPath);
         this->m_FragmentData = getFileContent(fragmentPath);
@@ -99,12 +99,13 @@ namespace MykaEngine
         if (location == -1)
         {
             std::cerr << "failed to find uniform: '" << name << "'" << std::endl;
+            return -1;
         }
         m_UniformLocationCache[name] = location;
         return location;
     }
 
-    std::string Shader::getFileContent(const std::string &path)
+    std::string Shader::getFileContent(const std::filesystem::path &path)
     {
         std::ifstream file(path);
 

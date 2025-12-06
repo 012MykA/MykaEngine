@@ -3,7 +3,6 @@
 #include <GLFW/glfw3.h>
 
 // std
-#include <iostream>
 #include <string>
 #include <stdexcept>
 
@@ -18,8 +17,13 @@ namespace MykaEngine
         MykaWindow(const MykaWindow&) = delete;
         MykaWindow& operator=(const MykaWindow&) = delete;
 
-        bool shouldClose();
-        void onUpdate();
+        bool shouldClose() const;
+
+        void pollEvents() const;
+        void swapBuffers() const;
+    
+    public:
+        GLFWwindow* getWindow();
 
     private:
         void initWindow();
@@ -29,6 +33,6 @@ namespace MykaEngine
         uint32_t m_Width;
         uint32_t m_Height;
 
-        GLFWwindow* window;
+        GLFWwindow* m_Window;
     };
 } // namespace MykaEngine

@@ -1,0 +1,44 @@
+#pragma once
+
+#include <GLFW/glfw3.h>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+
+#include "Timer.hpp"
+
+namespace MykaEngine
+{
+    class Camera
+    {
+    public:
+        Camera(float width, float height, GLFWwindow *window);
+
+        void onUpdate();
+
+        void handleInputs();
+
+    private:
+        void updateViewMatrix();
+        void updateProjectionMatrix();
+
+        glm::vec3 m_Position{0.0f, 0.0f, 1.0f};
+        glm::vec3 m_Front{0.0, 0.0f, -1.0f};
+        glm::vec3 m_Up{0.0f, 1.0f, 0.0f};
+        float m_Yaw = 0.0f;
+        float m_Pitch = 0.0f;
+
+        float m_FOV = 70;
+        float m_Near = 0.01f;
+        float m_Far = 1000.0f;
+
+        float m_Velocity = 1.0f;
+
+        float m_Width;
+        float m_Height;
+        GLFWwindow *m_Window;
+
+        glm::mat4 m_ViewMatrix;
+        glm::mat4 m_ProjectionMatrix;
+    };
+} // namespace MykaEngine

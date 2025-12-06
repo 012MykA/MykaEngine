@@ -5,6 +5,7 @@
 
 // std
 #include <iostream>
+#include <filesystem>
 #include <string>
 #include <fstream>
 #include <sstream>
@@ -15,7 +16,7 @@ namespace MykaEngine
     class Shader
     {
     public:
-        Shader(const std::string &vertex, const std::string &fragment);
+        Shader(const std::filesystem::path &vertexPath, const std::filesystem::path &fragmentPath);
         ~Shader();
 
         void use() const;
@@ -28,7 +29,7 @@ namespace MykaEngine
     private:
         void compileShaders();
         GLint getUniformLocation(const std::string &name);
-        std::string getFileContent(const std::string &path);
+        std::string getFileContent(const std::filesystem::path &path);
 
         GLuint m_Program;
         std::unordered_map<std::string, GLint> m_UniformLocationCache;

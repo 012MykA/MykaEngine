@@ -12,15 +12,24 @@ namespace MykaEngine
         shutdown();
     }
 
-    bool MykaWindow::shouldClose()
+    bool MykaWindow::shouldClose() const
     {
-        return glfwWindowShouldClose(window);
+        return glfwWindowShouldClose(m_Window);
     }
 
-    void MykaWindow::onUpdate()
+    void MykaWindow::pollEvents() const
     {
-        glfwSwapBuffers(window);
         glfwPollEvents();
+    }
+
+    void MykaWindow::swapBuffers() const
+    {
+        glfwSwapBuffers(m_Window);
+    }
+
+    GLFWwindow *MykaWindow::getWindow()
+    {
+        return m_Window;
     }
 
     void MykaEngine::MykaWindow::initWindow()
@@ -33,12 +42,12 @@ namespace MykaEngine
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
         glfwWindowHint(GLFW_OPENGL_CORE_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-        window = glfwCreateWindow(m_Width, m_Height, m_Title.c_str(), NULL, NULL);
-        if (window == nullptr)
+        m_Window = glfwCreateWindow(m_Width, m_Height, m_Title.c_str(), NULL, NULL);
+        if (m_Window == nullptr)
         {
             throw std::runtime_error("failed to create glfw window");
         }
-        glfwMakeContextCurrent(window);
+        glfwMakeContextCurrent(m_Window);
 
         if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
         {
@@ -49,7 +58,7 @@ namespace MykaEngine
 
     void MykaEngine::MykaWindow::shutdown()
     {
-        glfwDestroyWindow(window);
+        glfwDestroyWindow(m_Window);
         glfwTerminate();
     }
 } // namespace MykaEngine
