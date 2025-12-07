@@ -36,7 +36,7 @@ namespace MykaEngine
 
         float m_FOV = 70;
         float m_Near = 0.01f;
-        float m_Far = 1000.0f;
+        float m_Far = 10000.0f;
 
         float m_Velocity = 1.0f;
 

@@ -19,6 +19,11 @@ namespace MykaEngine
         glUseProgram(m_Program);
     }
 
+    void Shader::setUniform3f(const std::string &name, const glm::vec3 &value)
+    {
+        glUniform3f(getUniformLocation(name), value.x, value.y, value.z);
+    }
+
     void Shader::setUniform4f(const std::string &name, const glm::vec4 &value)
     {
         glUniform4f(getUniformLocation(name), value.x, value.y, value.z, value.w);

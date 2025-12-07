@@ -20,14 +20,15 @@ namespace MykaEngine
         void useTexture() const;
         void useUniforms(const glm::mat4& model, const glm::mat4& view, const glm::mat4& proj) const;
 
-        void setColor(const glm::vec4& color);
+        void setColor(const glm::vec3& color);
 
     private:
         std::shared_ptr<Shader> m_Shader;
         std::shared_ptr<Texture> m_Texture;
 
-        float m_Ambient = 0.2f;    // Object color in dark
-        glm::vec4 m_Color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
-        float m_Specular = 0.5f;   // Smoothness
+        glm::vec3 m_AmbientColor = {1.0f, 1.0f, 1.0f};
+        glm::vec3 m_Color = glm::vec3(1.0f, 1.0f, 1.0f);
+        glm::vec3 m_SpecularColor = glm::vec3();
+        float m_Shininess = 32.0f;
     };
 } // namespace MykaEngine

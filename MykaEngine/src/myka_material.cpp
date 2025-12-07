@@ -19,11 +19,11 @@ namespace MykaEngine
         glm::mat4 mvp = proj * view * model;
 
         m_Shader->setUniformMat4f("u_MVP", mvp);
-        m_Shader->setUniform4f("u_Color", m_Color);
+        m_Shader->setUniform3f("u_Color", m_Color);
         m_Shader->setUniform1i("u_Texture", 0);
     }
 
-    void Material::setColor(const glm::vec4 &color)
+    void Material::setColor(const glm::vec3 &color)
     {
         m_Color = color;
     }

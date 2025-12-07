@@ -19,6 +19,20 @@ static Mesh getCubeMesh();
 static Mesh getCircleMesh();
 static Mesh getSphereMesh(float radius, int sectors, int stacks);
 
+struct Light
+{
+    Light(Mesh mesh) : m_Mesh(mesh) {}
+
+    Mesh m_Mesh;
+    glm::vec3 m_Position;
+
+    glm::vec3 m_Color;
+
+    glm::vec3 m_Ambient;
+    glm::vec3 m_Diffuse;
+    glm::vec3 m_Specular;
+};
+
 int main()
 {
     try
@@ -36,12 +50,19 @@ int main()
         glEnable(GL_DEPTH_TEST);
 
         Shader shader("../shaders/defaultVert.glsl", "../shaders/defaultFrag.glsl");
+
+        // Skybox
+        Mesh skyboxMesh = getSphereMesh(100.0f, 36 * 5, 18 * 5);
+        Texture skyboxTexture("../assets/skyboxes/ocean/skybox.png");
+        Material skyboxMaterial(std::make_shared<Shader>(shader), std::make_shared<Texture>(skyboxTexture));
+        GameObject skybox(std::make_shared<Mesh>(skyboxMesh), std::make_shared<Material>(skyboxMaterial));
+
         Texture texture("../assets/brick.png");
         Material material(std::make_shared<Shader>(shader), std::make_shared<Texture>(texture));
 
         Mesh cubeMesh = getCubeMesh();
         Mesh circleMesh = getCircleMesh();
-        Mesh sphereMesh = getSphereMesh(1.0f, 36, 18.0f);
+        Mesh sphereMesh = getSphereMesh(1.0f, 36, 18);
 
         GameObject cubeObject(std::make_shared<Mesh>(cubeMesh), std::make_shared<Material>(material));
         cubeObject.getTransform().setPosition(glm::vec3(-2.0f, 0.0f, -3.0f));
@@ -52,10 +73,9 @@ int main()
         GameObject sphereObject(std::make_shared<Mesh>(sphereMesh), std::make_shared<Material>(material));
         sphereObject.getTransform().setPosition(glm::vec3(3.0f, 0.0f, -3.0f));
 
-        glClearColor(0.20f, 0.20f, 0.20f, 1.0f);
-
         double previousTime = glfwGetTime();
         int fps = 0;
+        glClearColor(0.20f, 0.20f, 0.20f, 1.0f);
         while (!window.shouldClose())
         {
             double currentTime = glfwGetTime();
@@ -75,12 +95,11 @@ int main()
             // onUpdate
             Timer::onUpdate();
             camera.onUpdate();
-            cubeObject.getTransform().rotate({0.0f, 1.0f, 0.0f});
-            circleObject.getTransform().rotate({1.0f, 0.0f, 0.0f});
-            sphereObject.getTransform().rotate({0.0f, 1.0f, 0.0f});
 
             // onRender
             renderer.clear();
+            renderer.draw(skybox, camera);
+
             renderer.draw(cubeObject, camera);
             renderer.draw(circleObject, camera);
             renderer.draw(sphereObject, camera);
@@ -99,35 +118,51 @@ int main()
 Mesh getCubeMesh()
 {
     std::vector<Vertex> vertices = {
-        {{-0.5f, -0.5f, 0.5f}, {0.0f, 0.0f}},
-        {{0.5f, -0.5f, 0.5f}, {1.0f, 0.0f}},
-        {{0.5f, 0.5f, 0.5f}, {1.0f, 1.0f}},
-        {{-0.5f, 0.5f, 0.5f}, {0.0f, 1.0f}},
+        {{-0.5f, -0.5f, 0.5f}, {0.0f, 0.0f}, {0.0f, 0.0f, 1.0f}},
+        {{0.5f, -0.5f, 0.5f}, {1.0f, 0.0f}, {0.0f, 0.0f, 1.0f}},
+        {{0.5f, 0.5f, 0.5f}, {1.0f, 1.0f}, {0.0f, 0.0f, 1.0f}},
+        {{-0.5f, 0.5f, 0.5f}, {0.0f, 1.0f}, {0.0f, 0.0f, 1.0f}},
 
-        {{0.5f, -0.5f, -0.5f}, {0.0f, 0.0f}},
-        {{-0.5f, -0.5f, -0.5f}, {1.0f, 0.0f}},
-        {{-0.5f, 0.5f, -0.5f}, {1.0f, 1.0f}},
-        {{0.5f, 0.5f, -0.5f}, {0.0f, 1.0f}},
+        {{0.5f, -0.5f, -0.5f}, {0.0f, 0.0f}, {
+                                                 0.0f,
+                                                 0.0f,
+                                                 -1.0f,
+                                             }},
+        {{-0.5f, -0.5f, -0.5f}, {1.0f, 0.0f}, {
+                                                  0.0f,
+                                                  0.0f,
+                                                  -1.0f,
+                                              }},
+        {{-0.5f, 0.5f, -0.5f}, {1.0f, 1.0f}, {
+                                                 0.0f,
+                                                 0.0f,
+                                                 -1.0f,
+                                             }},
+        {{0.5f, 0.5f, -0.5f}, {0.0f, 1.0f}, {
+                                                0.0f,
+                                                0.0f,
+                                                -1.0f,
+                                            }},
 
-        {{-0.5f, -0.5f, -0.5f}, {0.0f, 0.0f}},
-        {{-0.5f, -0.5f, 0.5f}, {1.0f, 0.0f}},
-        {{-0.5f, 0.5f, 0.5f}, {1.0f, 1.0f}},
-        {{-0.5f, 0.5f, -0.5f}, {0.0f, 1.0f}},
+        {{-0.5f, -0.5f, -0.5f}, {0.0f, 0.0f}, {-1.0f, 0.0f, 0.0f}},
+        {{-0.5f, -0.5f, 0.5f}, {1.0f, 0.0f}, {-1.0f, 0.0f, 0.0f}},
+        {{-0.5f, 0.5f, 0.5f}, {1.0f, 1.0f}, {-1.0f, 0.0f, 0.0f}},
+        {{-0.5f, 0.5f, -0.5f}, {0.0f, 1.0f}, {-1.0f, 0.0f, 0.0f}},
 
-        {{0.5f, -0.5f, 0.5f}, {0.0f, 0.0f}},
-        {{0.5f, -0.5f, -0.5f}, {1.0f, 0.0f}},
-        {{0.5f, 0.5f, -0.5f}, {1.0f, 1.0f}},
-        {{0.5f, 0.5f, 0.5f}, {0.0f, 1.0f}},
+        {{0.5f, -0.5f, 0.5f}, {0.0f, 0.0f}, {1.0f, 0.0f, 0.0f}},
+        {{0.5f, -0.5f, -0.5f}, {1.0f, 0.0f}, {1.0f, 0.0f, 0.0f}},
+        {{0.5f, 0.5f, -0.5f}, {1.0f, 1.0f}, {1.0f, 0.0f, 0.0f}},
+        {{0.5f, 0.5f, 0.5f}, {0.0f, 1.0f}, {1.0f, 0.0f, 0.0f}},
 
-        {{-0.5f, 0.5f, 0.5f}, {0.0f, 0.0f}},
-        {{0.5f, 0.5f, 0.5f}, {1.0f, 0.0f}},
-        {{0.5f, 0.5f, -0.5f}, {1.0f, 1.0f}},
-        {{-0.5f, 0.5f, -0.5f}, {0.0f, 1.0f}},
+        {{-0.5f, 0.5f, 0.5f}, {0.0f, 0.0f}, {0.0f, 1.0f, 0.0f}},
+        {{0.5f, 0.5f, 0.5f}, {1.0f, 0.0f}, {0.0f, 1.0f, 0.0f}},
+        {{0.5f, 0.5f, -0.5f}, {1.0f, 1.0f}, {0.0f, 1.0f, 0.0f}},
+        {{-0.5f, 0.5f, -0.5f}, {0.0f, 1.0f}, {0.0f, 1.0f, 0.0f}},
 
-        {{-0.5f, -0.5f, -0.5f}, {0.0f, 0.0f}},
-        {{0.5f, -0.5f, -0.5f}, {1.0f, 0.0f}},
-        {{0.5f, -0.5f, 0.5f}, {1.0f, 1.0f}},
-        {{-0.5f, -0.5f, 0.5f}, {0.0f, 1.0f}}};
+        {{-0.5f, -0.5f, -0.5f}, {0.0f, 0.0f}, {0.0f, -1.0f, 0.0f}},
+        {{0.5f, -0.5f, -0.5f}, {1.0f, 0.0f}, {0.0f, -1.0f, 0.0f}},
+        {{0.5f, -0.5f, 0.5f}, {1.0f, 1.0f}, {0.0f, -1.0f, 0.0f}},
+        {{-0.5f, -0.5f, 0.5f}, {0.0f, 1.0f}, {0.0f, -1.0f, 0.0f}}};
 
     std::vector<unsigned int> indices = {
         0, 1, 2, 2, 3, 0,
@@ -191,24 +226,24 @@ Mesh getSphereMesh(float radius, int sectors, int stacks)
     for (int i = 0; i <= stacks; ++i)
     {
         float stackAngle = M_PI / 2.0f - (float)i * stackStep;
-        float xy = radius * cos(stackAngle);
-        float z = radius * sin(stackAngle);
+
+        float xz = radius * cos(stackAngle);
+        float y = radius * sin(stackAngle);
 
         for (int j = 0; j <= sectors; ++j)
         {
             float sectorAngle = (float)j * sectorStep;
 
-            float x = xy * cos(sectorAngle);
-            float y = xy * sin(sectorAngle);
+            float x = xz * cos(sectorAngle);
+            float z = xz * sin(sectorAngle);
 
             glm::vec3 pos = {x, y, z};
             glm::vec3 normal = {x / radius, y / radius, z / radius};
 
             float u = (float)j / (float)sectors;
-            float v = (float)i / (float)stacks;
+            float v = 1.0f - (float)i / (float)stacks;
 
-            // TODO: add normal
-            vertices.push_back({pos, {u, v}});
+            vertices.push_back({pos, {u, v}, normal});
         }
     }
 
