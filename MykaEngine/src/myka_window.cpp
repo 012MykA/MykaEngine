@@ -77,5 +77,6 @@ namespace MykaEngine
     void MykaWindow::framebufferSizeCallback(GLFWwindow *window, int width, int height)
     {
         glViewport(0, 0, width, height);
+        
     }
 } // namespace MykaEngine

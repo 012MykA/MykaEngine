@@ -20,6 +20,12 @@ namespace MykaEngine
         updateModelMatrix();
     }
 
+    void Transform::rotate(const glm::vec3 &rotation)
+    {
+        m_Rotation += rotation;
+        updateModelMatrix();
+    }
+
     void Transform::setScale(const glm::vec3 &scale)
     {
         m_Scale = scale;

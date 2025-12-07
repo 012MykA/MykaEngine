@@ -7,8 +7,9 @@ namespace MykaEngine
     class Timer
     {
     public:
-        static void onUpdate();
+        Timer() = delete;
 
+        static void onUpdate();
         static float getDeltaTime() { return m_DeltaTime; }
 
     private:
