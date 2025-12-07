@@ -38,6 +38,12 @@ namespace MykaEngine
         glfwSwapBuffers(m_Window);
     }
 
+    void MykaWindow::setWindowTitle(const std::string &title)
+    {
+        m_Title = title;
+        glfwSetWindowTitle(m_Window, m_Title.c_str());
+    }
+
     GLFWwindow *MykaWindow::getWindow()
     {
         return m_Window;
@@ -77,6 +83,5 @@ namespace MykaEngine
     void MykaWindow::framebufferSizeCallback(GLFWwindow *window, int width, int height)
     {
         glViewport(0, 0, width, height);
-        
     }
 } // namespace MykaEngine

@@ -22,6 +22,8 @@ namespace MykaEngine
 
         void pollEvents() const;
         void swapBuffers() const;
+
+        void setWindowTitle(const std::string& title);
     
     public:
         GLFWwindow* getWindow();

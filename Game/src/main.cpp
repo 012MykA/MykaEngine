@@ -17,6 +17,7 @@ using namespace MykaEngine;
 
 static Mesh getCubeMesh();
 static Mesh getCircleMesh();
+static Mesh getSphereMesh(float radius, int sectors, int stacks);
 
 int main()
 {
@@ -40,16 +41,33 @@ int main()
 
         Mesh cubeMesh = getCubeMesh();
         Mesh circleMesh = getCircleMesh();
+        Mesh sphereMesh = getSphereMesh(1.0f, 36, 18.0f);
 
         GameObject cubeObject(std::make_shared<Mesh>(cubeMesh), std::make_shared<Material>(material));
-        cubeObject.getTransform().setPosition(glm::vec3(0.0f, 0.0f, 100.0f));
+        cubeObject.getTransform().setPosition(glm::vec3(-2.0f, 0.0f, -3.0f));
 
         GameObject circleObject(std::make_shared<Mesh>(circleMesh), std::make_shared<Material>(material));
-        cubeObject.getTransform().setPosition(glm::vec3(0.0f, 0.0f, 0.0f));
+        circleObject.getTransform().setPosition(glm::vec3(0.0f, 0.0f, -3.0f));
+
+        GameObject sphereObject(std::make_shared<Mesh>(sphereMesh), std::make_shared<Material>(material));
+        sphereObject.getTransform().setPosition(glm::vec3(3.0f, 0.0f, -3.0f));
 
         glClearColor(0.20f, 0.20f, 0.20f, 1.0f);
+
+        double previousTime = glfwGetTime();
+        int fps = 0;
         while (!window.shouldClose())
         {
+            double currentTime = glfwGetTime();
+            fps++;
+            if (currentTime - previousTime >= 1.0)
+            {
+                window.setWindowTitle(std::format("MykaEngine fps: {}", fps));
+
+                fps = 0;
+                previousTime = currentTime;
+            }
+
             // Inputs
             window.pollEvents();
             camera.handleInputs();
@@ -58,11 +76,14 @@ int main()
             Timer::onUpdate();
             camera.onUpdate();
             cubeObject.getTransform().rotate({0.0f, 1.0f, 0.0f});
+            circleObject.getTransform().rotate({1.0f, 0.0f, 0.0f});
+            sphereObject.getTransform().rotate({0.0f, 1.0f, 0.0f});
 
             // onRender
             renderer.clear();
             renderer.draw(cubeObject, camera);
             renderer.draw(circleObject, camera);
+            renderer.draw(sphereObject, camera);
 
             window.swapBuffers();
         }
@@ -124,32 +145,93 @@ Mesh getCircleMesh()
     std::vector<Vertex> vertices{};
     std::vector<GLuint> indices{};
 
-    Vertex center{{0.0f, 0.0f, 0.0f}, {0.5f, 0.5f}}; 
+    Vertex center{{0.0f, 0.0f, 0.0f}, {0.5f, 0.5f}};
     vertices.push_back(center);
-    
-    float radius = 10.0f;
-    int res = 100;
+
+    float radius = 1.0f;
+    int res = 36;
 
     for (int i = 0; i < res; i++)
     {
         float angle = 2.0f * M_PI * (float)(i) / (float)res;
-        
-        float x = center.position.x + cos(angle) * radius;
-        float y = center.position.y + sin(angle) * radius;
 
-        Vertex v{{x, y, 0.0f}, {1.0, 0.0}}; 
+        float x = center.position.x + cos(angle) * radius;
+        float z = center.position.z + sin(angle) * radius;
+
+        Vertex v{{x, 0.0f, z}, {1.0, 0.0}};
         vertices.push_back(v);
     }
-    
+
     for (int i = 1; i <= res; i++)
     {
-        indices.push_back(0); 
+        indices.push_back(0);
         indices.push_back(i);
-        
-        if (i < res) {
+
+        if (i < res)
+        {
             indices.push_back(i + 1);
-        } else {
+        }
+        else
+        {
             indices.push_back(1);
+        }
+    }
+
+    return {vertices, indices};
+}
+
+Mesh getSphereMesh(float radius, int sectors, int stacks)
+{
+    std::vector<Vertex> vertices{};
+    std::vector<GLuint> indices{};
+
+    float stackStep = M_PI / (float)stacks;
+    float sectorStep = 2.0f * M_PI / (float)sectors;
+
+    for (int i = 0; i <= stacks; ++i)
+    {
+        float stackAngle = M_PI / 2.0f - (float)i * stackStep;
+        float xy = radius * cos(stackAngle);
+        float z = radius * sin(stackAngle);
+
+        for (int j = 0; j <= sectors; ++j)
+        {
+            float sectorAngle = (float)j * sectorStep;
+
+            float x = xy * cos(sectorAngle);
+            float y = xy * sin(sectorAngle);
+
+            glm::vec3 pos = {x, y, z};
+            glm::vec3 normal = {x / radius, y / radius, z / radius};
+
+            float u = (float)j / (float)sectors;
+            float v = (float)i / (float)stacks;
+
+            // TODO: add normal
+            vertices.push_back({pos, {u, v}});
+        }
+    }
+
+    for (int i = 0; i < stacks; ++i)
+    {
+        int k1 = i * (sectors + 1);
+        int k2 = k1 + (sectors + 1);
+
+        for (int j = 0; j < sectors; ++j, ++k1, ++k2)
+        {
+            if (i != 0)
+            {
+                indices.push_back(k1);
+                indices.push_back(k2);
+                indices.push_back(k1 + 1);
+            }
+
+            if (i != (stacks - 1))
+            {
+                indices.push_back(k1 + 1);
+                indices.push_back(k2);
+                indices.push_back(k2 + 1);
+            }
         }
     }
 
