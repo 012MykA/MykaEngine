@@ -7,7 +7,22 @@ namespace MykaEngine
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     }
 
-    void Renderer::draw(const GameObject &object, const Camera &camera) const
+    void Renderer::drawScene(const Scene &scene, const Camera camera) const
+    {
+        if (scene.getLights().empty())
+        {
+            return;
+        }
+
+        const auto& light = *scene.getLights()[0];
+
+        for (const auto& object : scene.getGameObjects())
+        {
+            drawObject(*object, camera, light);
+        }
+    }
+
+    void Renderer::drawObject(const GameObject &object, const Camera &camera, const Light& light) const
     {
         const auto& transform = object.getTransform();
         const auto& material = object.getMaterial();
@@ -16,9 +31,10 @@ namespace MykaEngine
         glm::mat4 model = transform.getModelMatrix();
         glm::mat4 view = camera.getViewMatrix();
         glm::mat4 proj = camera.getProjectionMatrix();
+        glm::vec3 viewPos = camera.getPosition();
 
         material->useShader();
-        material->useUniforms(model, view, proj);
+        material->useUniforms(model, view, proj, viewPos, light);
         material->useTexture();
         
         mesh->bind();

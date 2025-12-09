@@ -34,6 +34,11 @@ namespace MykaEngine
         glUniform1i(getUniformLocation(name), value);
     }
 
+    void Shader::setUniform1f(const std::string &name, float value)
+    {
+        glUniform1f(getUniformLocation(name), value);
+    }
+
     void Shader::setUniformMat4f(const std::string &name, const glm::mat4 &matrix)
     {
         glUniformMatrix4fv(getUniformLocation(name), 1, GL_FALSE, glm::value_ptr(matrix));

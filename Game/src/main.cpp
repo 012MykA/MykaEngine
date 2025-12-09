@@ -7,7 +7,8 @@
 #include "myka_game_object.hpp"
 #include "myka_camera.hpp"
 #include "myka_timer.hpp"
-
+#include "myka_scene.hpp"
+#include "myka_light.hpp"
 #include "Deps.hpp"
 
 // std
@@ -19,59 +20,57 @@ static Mesh getCubeMesh();
 static Mesh getCircleMesh();
 static Mesh getSphereMesh(float radius, int sectors, int stacks);
 
-struct Light
-{
-    Light(Mesh mesh) : m_Mesh(mesh) {}
-
-    Mesh m_Mesh;
-    glm::vec3 m_Position;
-
-    glm::vec3 m_Color;
-
-    glm::vec3 m_Ambient;
-    glm::vec3 m_Diffuse;
-    glm::vec3 m_Specular;
-};
-
 int main()
 {
     try
     {
         MykaWindow window(WINDOW_WIDTH, WINDOW_HEIGHT, "MykaEngine");
-
         Renderer renderer;
         Camera camera(WINDOW_WIDTH, WINDOW_HEIGHT, window.getWindow());
 
-        // Blending
+        Scene scene;
+        
+        // Blending + Depth
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-        // Depth
         glEnable(GL_DEPTH_TEST);
 
-        Shader shader("../shaders/defaultVert.glsl", "../shaders/defaultFrag.glsl");
+        std::shared_ptr<Light> mainLight = std::make_shared<Light>(
+            glm::vec3(5.0f, 5.0f, 5.0f),
+            glm::vec3(1.0f, 1.0f, 1.0f),
+            glm::vec3(0.05f, 0.05f, 0.05f),
+            glm::vec3(0.8f, 0.8f, 0.8f),
+            glm::vec3(1.0f, 1.0f, 1.0f)
+        );
+        scene.addLight(mainLight);
 
-        // Skybox
+        // Shaders
+        Shader objectShader("../shaders/defaultVert.glsl", "../shaders/defaultFrag.glsl");
+
+        // Meshes
         Mesh skyboxMesh = getSphereMesh(100.0f, 36 * 5, 18 * 5);
-        Texture skyboxTexture("../assets/skyboxes/ocean/skybox.png");
-        Material skyboxMaterial(std::make_shared<Shader>(shader), std::make_shared<Texture>(skyboxTexture));
-        GameObject skybox(std::make_shared<Mesh>(skyboxMesh), std::make_shared<Material>(skyboxMaterial));
-
-        Texture texture("../assets/brick.png");
-        Material material(std::make_shared<Shader>(shader), std::make_shared<Texture>(texture));
-
         Mesh cubeMesh = getCubeMesh();
-        Mesh circleMesh = getCircleMesh();
         Mesh sphereMesh = getSphereMesh(1.0f, 36, 18);
+        
+        // Textures
+        Texture skyboxTexture("../assets/skyboxes/ocean/skybox.png");
+        Texture brickTexture("../assets/brick.png");
+
+        // Materials
+        Material skyboxMaterial(std::make_shared<Shader>(objectShader), std::make_shared<Texture>(skyboxTexture));
+        Material material(std::make_shared<Shader>(objectShader), std::make_shared<Texture>(brickTexture));
+
+        // GameObjects
+        GameObject skybox(std::make_shared<Mesh>(skyboxMesh), std::make_shared<Material>(skyboxMaterial));
+        scene.addGameObject(std::make_shared<GameObject>(skybox));
 
         GameObject cubeObject(std::make_shared<Mesh>(cubeMesh), std::make_shared<Material>(material));
         cubeObject.getTransform().setPosition(glm::vec3(-2.0f, 0.0f, -3.0f));
-
-        GameObject circleObject(std::make_shared<Mesh>(circleMesh), std::make_shared<Material>(material));
-        circleObject.getTransform().setPosition(glm::vec3(0.0f, 0.0f, -3.0f));
+        scene.addGameObject(std::make_shared<GameObject>(cubeObject));
 
         GameObject sphereObject(std::make_shared<Mesh>(sphereMesh), std::make_shared<Material>(material));
         sphereObject.getTransform().setPosition(glm::vec3(3.0f, 0.0f, -3.0f));
+        scene.addGameObject(std::make_shared<GameObject>(sphereObject));
 
         double previousTime = glfwGetTime();
         int fps = 0;
@@ -83,7 +82,6 @@ int main()
             if (currentTime - previousTime >= 1.0)
             {
                 window.setWindowTitle(std::format("MykaEngine fps: {}", fps));
-
                 fps = 0;
                 previousTime = currentTime;
             }
@@ -98,11 +96,7 @@ int main()
 
             // onRender
             renderer.clear();
-            renderer.draw(skybox, camera);
-
-            renderer.draw(cubeObject, camera);
-            renderer.draw(circleObject, camera);
-            renderer.draw(sphereObject, camera);
+            renderer.drawScene(scene, camera);
 
             window.swapBuffers();
         }
@@ -123,26 +117,10 @@ Mesh getCubeMesh()
         {{0.5f, 0.5f, 0.5f}, {1.0f, 1.0f}, {0.0f, 0.0f, 1.0f}},
         {{-0.5f, 0.5f, 0.5f}, {0.0f, 1.0f}, {0.0f, 0.0f, 1.0f}},
 
-        {{0.5f, -0.5f, -0.5f}, {0.0f, 0.0f}, {
-                                                 0.0f,
-                                                 0.0f,
-                                                 -1.0f,
-                                             }},
-        {{-0.5f, -0.5f, -0.5f}, {1.0f, 0.0f}, {
-                                                  0.0f,
-                                                  0.0f,
-                                                  -1.0f,
-                                              }},
-        {{-0.5f, 0.5f, -0.5f}, {1.0f, 1.0f}, {
-                                                 0.0f,
-                                                 0.0f,
-                                                 -1.0f,
-                                             }},
-        {{0.5f, 0.5f, -0.5f}, {0.0f, 1.0f}, {
-                                                0.0f,
-                                                0.0f,
-                                                -1.0f,
-                                            }},
+        {{0.5f, -0.5f, -0.5f}, {0.0f, 0.0f}, {0.0f, 0.0f, -1.0f}},
+        {{-0.5f, -0.5f, -0.5f}, {1.0f, 0.0f}, {0.0f, 0.0f, -1.0f}},
+        {{-0.5f, 0.5f, -0.5f}, {1.0f, 1.0f}, {0.0f, 0.0f, -1.0f}},
+        {{0.5f, 0.5f, -0.5f}, {0.0f, 1.0f}, {0.0f, 0.0f, -1.0f}},
 
         {{-0.5f, -0.5f, -0.5f}, {0.0f, 0.0f}, {-1.0f, 0.0f, 0.0f}},
         {{-0.5f, -0.5f, 0.5f}, {1.0f, 0.0f}, {-1.0f, 0.0f, 0.0f}},
@@ -171,46 +149,6 @@ Mesh getCubeMesh()
         12, 13, 14, 14, 15, 12,
         16, 17, 18, 18, 19, 16,
         20, 21, 22, 22, 23, 20};
-
-    return {vertices, indices};
-}
-
-Mesh getCircleMesh()
-{
-    std::vector<Vertex> vertices{};
-    std::vector<GLuint> indices{};
-
-    Vertex center{{0.0f, 0.0f, 0.0f}, {0.5f, 0.5f}};
-    vertices.push_back(center);
-
-    float radius = 1.0f;
-    int res = 36;
-
-    for (int i = 0; i < res; i++)
-    {
-        float angle = 2.0f * M_PI * (float)(i) / (float)res;
-
-        float x = center.position.x + cos(angle) * radius;
-        float z = center.position.z + sin(angle) * radius;
-
-        Vertex v{{x, 0.0f, z}, {1.0, 0.0}};
-        vertices.push_back(v);
-    }
-
-    for (int i = 1; i <= res; i++)
-    {
-        indices.push_back(0);
-        indices.push_back(i);
-
-        if (i < res)
-        {
-            indices.push_back(i + 1);
-        }
-        else
-        {
-            indices.push_back(1);
-        }
-    }
 
     return {vertices, indices};
 }

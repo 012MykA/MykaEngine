@@ -14,6 +14,7 @@ namespace MykaEngine
 
         m_VBO.vertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *)0);
         m_VBO.vertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *)(3 * sizeof(float)));
+        m_VBO.vertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *)(5 * sizeof(float)));
 
         m_IBO.unbind();
         m_VBO.unbind();
