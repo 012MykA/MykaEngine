@@ -21,6 +21,6 @@ namespace MykaEngine
         void drawScene(const Scene& scene, const Camera camera) const;
 
     public:
-        void drawObject(const GameObject& object, const Camera& camera, const Light &light, bool isLight) const;
+        void drawObject(const GameObject& object, const Camera& camera, const Light &light) const;
     };
 } // namespace MykaEngine

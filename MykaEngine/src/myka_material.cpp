@@ -14,18 +14,20 @@ namespace MykaEngine
         m_Texture->bind(0);
     }
 
-    void Material::setUniforms(const glm::mat4 &model, const glm::mat4 &view, const glm::mat4 &proj, const Light& light, bool isLight) const
+    void Material::setUniforms(const glm::mat4 &model, const glm::mat4 &view, const glm::mat4 &proj, const glm::vec3 &viewPos, const Light &light) const
     {
-        m_Shader->use();
-
         glm::mat4 mvp = proj * view * model;
 
         m_Shader->setUniformMat4f("u_MVP", mvp);
-        if (!isLight)
+        m_Shader->setUniformMat4f("u_Model", model);
+        if (hasTexture())
         {
             m_Shader->setUniform1i("u_Texture", 0);
         }
         m_Shader->setUniform3f("u_LightColor", light.getColor());
+        m_Shader->setUniform3f("u_ObjectColor", m_Color);
+        m_Shader->setUniform3f("u_LightPos", light.getPosition());
+        m_Shader->setUniform3f("u_ViewPos", viewPos);
     }
 
     void Material::setColor(const glm::vec3 &color)
@@ -36,5 +38,10 @@ namespace MykaEngine
     const glm::vec3 &Material::getColor() const
     {
         return m_Color;
+    }
+
+    bool Material::hasTexture() const
+    {
+        return m_Texture != nullptr;
     }
 } // namespace MykaEngine

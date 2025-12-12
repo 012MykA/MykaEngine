@@ -63,7 +63,7 @@ int main()
         while (!window.shouldClose())
         {
             double currentTime = glfwGetTime();
-            fps++;
+            fps++; 
             if (currentTime - previousTime >= 1.0)
             {
                 window.setWindowTitle(std::format("MykaEngine fps: {}", fps));
@@ -86,38 +86,7 @@ int main()
 
             // onRender
             renderer.clear();
-            { // Object
-                GameObject object = earth;
-
-                const auto &transform = object.getTransform();
-                const auto &material = object.getMaterial();
-                const auto &mesh = object.getMesh();
-
-                glm::mat4 model = transform.getModelMatrix();
-                glm::mat4 view = camera.getViewMatrix();
-                glm::mat4 proj = camera.getProjectionMatrix();
-
-                material->bindShader();
-
-                glm::mat4 mvp = proj * view * model;
-                glm::mat3 normalMatrix = glm::transpose(glm::inverse(glm::mat3(model)));
-
-                material->m_Shader->setUniformMat4f("u_MVP", mvp);
-                material->m_Shader->setUniformMat4f("u_Model", model);
-                material->m_Shader->setUniform1i("u_Texture", 0);
-                material->m_Shader->setUniform3f("u_LightColor", light.getColor());
-                material->m_Shader->setUniform3f("u_ObjectColor", object.getMaterial()->getColor());
-                material->m_Shader->setUniform3f("u_LightPos", light.getPosition());
-                material->m_Shader->setUniform3f("u_ViewPos", camera.getPosition());
-
-                material->bindTexture();
-
-                mesh->bind();
-
-                glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(mesh->getIndexCount()), GL_UNSIGNED_INT, 0);
-
-                mesh->unbind();
-            }
+            renderer.drawObject(earth, camera, light);
 
             { // light
                 GameObject object = sun;

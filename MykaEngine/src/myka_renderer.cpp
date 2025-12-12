@@ -22,7 +22,7 @@ namespace MykaEngine
         }
     }
 
-    void Renderer::drawObject(const GameObject &object, const Camera &camera, const Light& light, bool isLight) const
+    void Renderer::drawObject(const GameObject &object, const Camera &camera, const Light& light) const
     {
         const auto& transform = object.getTransform();
         const auto& material = object.getMaterial();
@@ -33,7 +33,7 @@ namespace MykaEngine
         glm::mat4 proj = camera.getProjectionMatrix();
 
         material->bindShader();
-        material->setUniforms(model, view, proj, light, isLight);
+        material->setUniforms(model, view, proj, camera.getPosition(), light);
         material->bindTexture();
         
         mesh->bind();
