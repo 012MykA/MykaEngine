@@ -26,6 +26,7 @@ namespace MykaEngine
         m_VAO.bind();
         m_IBO.bind();
     }
+    
     void Mesh::unbind() const
     {
         m_VAO.unbind();

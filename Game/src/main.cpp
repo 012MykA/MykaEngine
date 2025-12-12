@@ -32,35 +32,34 @@ int main()
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         glEnable(GL_DEPTH_TEST);
 
-        // Shaders
-        Shader objectShader(DEFAULT_VERTEX_SHADER_PATH, DEFAULT_FRAGMENT_SHADER_PATH);
-
-        // Meshes
-        Mesh platformMesh = getPlatformMesh();
-
-        // Textures
-        Texture woodTexture(WOOD_TEXTURE_PATH);
-
-        // Materials
-        Material woodMaterial(std::make_shared<Shader>(objectShader), std::make_shared<Texture>(woodTexture));
-
-        // GameObjects
-        GameObject platformObject(std::make_shared<Mesh>(platformMesh), std::make_shared<Material>(woodMaterial));
-        platformObject.getTransform().setScale(glm::vec3(3.0f));
-        platformObject.getTransform().setPosition(glm::vec3(0.0f, -1.0f, -2.0f));
-
         // Light
-        Light mainLight = {
-            glm::vec3(5.0f, 5.0f, 5.0f),
-            glm::vec3(1.0f, 1.0f, 1.0f),
-            glm::vec3(0.05f, 0.05f, 0.05f),
-            glm::vec3(0.8f, 0.8f, 0.8f),
-            glm::vec3(1.0f, 1.0f, 1.0f),
-        };
+        Light light = {
+            glm::vec3(0.0f),
+            glm::vec3(1.0f),
+            glm::vec3(0.05f),
+            glm::vec3(0.8f),
+            glm::vec3(1.0f)};
+
+        Shader lightShader(LIGHT_VERTEX_SHADER_PATH, LIGHT_FRAGMENT_SHADER_PATH);
+        Texture sunTexture(SUN_TEXTURE_PATH);
+        Material sunMaterial(std::make_shared<Shader>(lightShader), std::make_shared<Texture>(sunTexture));
+        Mesh sunMesh = getSphereMesh(SUN_RADIUS, 64, 64);
+        GameObject sun(std::make_shared<Mesh>(sunMesh), std::make_shared<Material>(sunMaterial));
+        sun.getTransform().setPosition(light.getPosition());
+
+        // Earth
+        Mesh earthMesh = getCubeMesh(/*EARTH_RADIUS, 64, 64*/);
+        Shader objectShader(DEFAULT_VERTEX_SHADER_PATH, DEFAULT_FRAGMENT_SHADER_PATH);
+        Texture earthTexture(EARTH_TEXTURE_PATH);
+        Material earthMaterial(std::make_shared<Shader>(objectShader), std::make_shared<Texture>(earthTexture));
+        GameObject earth(std::make_shared<Mesh>(earthMesh), std::make_shared<Material>(earthMaterial));
+        earth.getTransform().setPosition(sun.getTransform().getPosition() + glm::vec3(150.0f, 0.0f, 0.0f));
+
+        camera.setPosition(earth.getTransform().getPosition());
 
         double previousTime = glfwGetTime();
         int fps = 0;
-        glClearColor(0.20f, 0.20f, 0.20f, 1.0f);
+        glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         while (!window.shouldClose())
         {
             double currentTime = glfwGetTime();
@@ -81,9 +80,69 @@ int main()
             Timer::onUpdate();
             camera.onUpdate();
 
+            earth.getTransform().rotate(glm::vec3(0.0f, 1.0f, 0.0f));
+
             // onRender
             renderer.clear();
-            renderer.drawObject(platformObject, camera, mainLight);
+            { // Object
+                GameObject object = earth;
+
+                const auto &transform = object.getTransform();
+                const auto &material = object.getMaterial();
+                const auto &mesh = object.getMesh();
+
+                glm::mat4 model = transform.getModelMatrix();
+                glm::mat4 view = camera.getViewMatrix();
+                glm::mat4 proj = camera.getProjectionMatrix();
+
+                material->bindShader();
+
+                glm::mat4 mvp = proj * view * model;
+
+                material->m_Shader->setUniformMat4f("u_MVP", mvp);
+                material->m_Shader->setUniformMat4f("u_Model", model);
+                material->m_Shader->setUniform1i("u_Texture", 0);
+                material->m_Shader->setUniform3f("u_LightColor", light.getColor());
+                material->m_Shader->setUniform3f("u_ObjectColor", object.getMaterial()->getColor());
+                material->m_Shader->setUniform3f("u_LightPos", light.getPosition());
+                material->m_Shader->setUniform3f("u_ViewPos", camera.getPosition());
+
+                material->bindTexture();
+
+                mesh->bind();
+
+                glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(mesh->getIndexCount()), GL_UNSIGNED_INT, 0);
+
+                mesh->unbind();
+            }
+
+            { // light
+                GameObject object = sun;
+
+                const auto &transform = object.getTransform();
+                const auto &material = object.getMaterial();
+                const auto &mesh = object.getMesh();
+
+                glm::mat4 model = transform.getModelMatrix();
+                glm::mat4 view = camera.getViewMatrix();
+                glm::mat4 proj = camera.getProjectionMatrix();
+
+                material->bindShader();
+
+                glm::mat4 mvp = proj * view * model;
+
+                material->m_Shader->setUniformMat4f("u_MVP", mvp);
+                material->m_Shader->setUniform1i("u_Texture", 0);
+                material->m_Shader->setUniform3f("u_LightColor", light.getColor());
+
+                material->bindTexture();
+
+                mesh->bind();
+
+                glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(mesh->getIndexCount()), GL_UNSIGNED_INT, 0);
+
+                mesh->unbind();
+            }
 
             window.swapBuffers();
         }
@@ -105,14 +164,7 @@ Mesh getPlatformMesh()
         {{0.5f, 0.0f, 0.5f}, {1.0f, 0.0f}, {0.0f, 1.0f, 0.0f}},
     };
 
-    std::vector<GLuint> indices = {
-        0,
-        1,
-        2,
-        2,
-        3,
-        0,
-    };
+    std::vector<GLuint> indices = {0, 1, 2, 2, 3, 0};
 
     return {vertices, indices};
 }
@@ -152,44 +204,12 @@ Mesh getCubeMesh()
     };
 
     std::vector<unsigned int> indices = {
-        0,
-        1,
-        2,
-        2,
-        3,
-        0,
-        4,
-        5,
-        6,
-        6,
-        7,
-        4,
-        8,
-        9,
-        10,
-        10,
-        11,
-        8,
-        12,
-        13,
-        14,
-        14,
-        15,
-        12,
-        16,
-        17,
-        18,
-        18,
-        19,
-        16,
-        20,
-        21,
-        22,
-        22,
-        23,
-        20,
-    };
-
+        0, 1, 2, 2, 3, 0,
+        4, 5, 6, 6, 7, 4,
+        8, 9, 10, 10, 11, 8,
+        12, 13, 14, 14, 15, 12,
+        16, 17, 18, 18, 19, 16,
+        20, 21, 22, 22, 23, 20};
     return {vertices, indices};
 }
 

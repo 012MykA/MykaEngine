@@ -25,11 +25,13 @@ namespace MykaEngine
         const glm::mat4 &getProjectionMatrix() const;
         const glm::vec3 &getPosition() const;
 
+        void setPosition(const glm::vec3& position);
+
     private:
         void updateViewMatrix();
         void updateProjectionMatrix();
 
-        glm::vec3 m_Position{0.0f, 0.0f, 0.0f};
+        glm::vec3 m_Position{0.0f, 0.0f, 2.0f};
         glm::vec3 m_Front{0.0, 0.0f, -1.0f};
         glm::vec3 m_Up{0.0f, 1.0f, 0.0f};
         float m_Yaw = -90.0f;

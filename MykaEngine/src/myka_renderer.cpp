@@ -18,11 +18,11 @@ namespace MykaEngine
 
         for (const auto& object : scene.getGameObjects())
         {
-            drawObject(*object, camera, light);
+            // drawObject(*object, camera, light);
         }
     }
 
-    void Renderer::drawObject(const GameObject &object, const Camera &camera, const Light& light) const
+    void Renderer::drawObject(const GameObject &object, const Camera &camera, const Light& light, bool isLight) const
     {
         const auto& transform = object.getTransform();
         const auto& material = object.getMaterial();
@@ -31,11 +31,10 @@ namespace MykaEngine
         glm::mat4 model = transform.getModelMatrix();
         glm::mat4 view = camera.getViewMatrix();
         glm::mat4 proj = camera.getProjectionMatrix();
-        glm::vec3 viewPos = camera.getPosition();
 
-        material->useShader();
-        material->useUniforms(model, view, proj, viewPos, light);
-        material->useTexture();
+        material->bindShader();
+        material->setUniforms(model, view, proj, light, isLight);
+        material->bindTexture();
         
         mesh->bind();
 

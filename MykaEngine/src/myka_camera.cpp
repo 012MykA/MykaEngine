@@ -26,6 +26,11 @@ namespace MykaEngine
         return m_Position;
     }
 
+    void Camera::setPosition(const glm::vec3 &position)
+    {
+        m_Position = position;
+    }
+
     void Camera::updateProjectionMatrix()
     {
         float aspectRatio = m_Width / m_Height;
@@ -109,7 +114,6 @@ namespace MykaEngine
 
     void Camera::onUpdate()
     {
-        handleInputs();
         updateViewMatrix();
         updateProjectionMatrix();
     }

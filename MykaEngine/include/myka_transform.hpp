@@ -17,6 +17,10 @@ namespace MykaEngine
         void rotate(const glm::vec3& rotation);
         void setScale(const glm::vec3& scale);
 
+        const glm::vec3& getPosition() const;
+        const glm::vec3& getRotation() const;
+        const glm::vec3& getScale() const;
+
         const glm::mat4& getModelMatrix() const;
 
     private:

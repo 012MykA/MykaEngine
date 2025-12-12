@@ -32,6 +32,21 @@ namespace MykaEngine
         updateModelMatrix();
     }
 
+    const glm::vec3 &Transform::getPosition() const
+    {
+        return m_Position;
+    }
+
+    const glm::vec3 &Transform::getRotation() const
+    {
+        return m_Rotation;
+    }
+
+    const glm::vec3 &Transform::getScale() const
+    {
+        return m_Scale;
+    }
+
     const glm::mat4 &Transform::getModelMatrix() const
     {
         return m_ModelMatrix;

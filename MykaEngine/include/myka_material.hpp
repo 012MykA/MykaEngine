@@ -17,14 +17,16 @@ namespace MykaEngine
         Material(std::shared_ptr<Shader> shader, std::shared_ptr<Texture> texture);
 
     public:
-        void useShader() const;
-        void useTexture() const;
-        void useUniforms(const glm::mat4 &model, const glm::mat4 &view, const glm::mat4 &proj,
-                         const glm::vec3 &viewPos, const Light &light) const;
+        void bindShader() const;
+        void bindTexture() const;
+        void setUniforms(const glm::mat4 &model, const glm::mat4 &view, const glm::mat4 &proj, const Light& light, bool isLight) const;
 
+    public:
         void setColor(const glm::vec3 &color);
 
-    private:
+        const glm::vec3& getColor() const;
+
+    public: // TODO: private
         std::shared_ptr<Shader> m_Shader;
         std::shared_ptr<Texture> m_Texture;
 

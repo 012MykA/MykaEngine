@@ -61,6 +61,10 @@ namespace MykaEngine
             glDisable(GL_POLYGON_SMOOTH);
             glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
         }
+        if (glfwGetKey(m_Window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+        {
+            glfwSetWindowShouldClose(m_Window, GLFW_TRUE);
+        }
     }
 
     void MykaWindow::swapBuffers() const
