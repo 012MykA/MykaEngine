@@ -12,6 +12,12 @@ namespace MykaEngine
         m_Lights.push_back(light);
     }
 
+    void Scene::clear()
+    {
+        m_GameObjects.clear();
+        m_Lights.clear();
+    }
+
     const std::vector<std::shared_ptr<GameObject>> &Scene::getGameObjects() const
     {
         return m_GameObjects;

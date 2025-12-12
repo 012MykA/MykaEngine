@@ -17,6 +17,8 @@ namespace MykaEngine
         
         void addGameObject(std::shared_ptr<GameObject> object);
         void addLight(std::shared_ptr<Light> light);
+
+        void clear();
     
     public:
         const std::vector<std::shared_ptr<GameObject>>& getGameObjects() const;

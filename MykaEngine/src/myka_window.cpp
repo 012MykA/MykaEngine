@@ -2,14 +2,44 @@
 
 namespace MykaEngine
 {
-    MykaWindow::MykaWindow(uint32_t width, uint32_t height, const std::string &title) : m_Width(width), m_Height(height), m_Title(title)
+    MykaWindow::MykaWindow(uint32_t width, uint32_t height, const std::string &title, bool fullscreen) : m_Width(width), m_Height(height), m_Title(title)
     {
-        initWindow();
+        if (!glfwInit())
+        {
+            throw std::runtime_error("failed to initialize glfw");
+        }
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
+        glfwWindowHint(GLFW_OPENGL_CORE_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+
+        m_Monitor = glfwGetPrimaryMonitor();
+
+        const GLFWvidmode *mode = glfwGetVideoMode(m_Monitor);
+        glfwWindowHint(GLFW_RED_BITS, mode->redBits);
+        glfwWindowHint(GLFW_GREEN_BITS, mode->greenBits);
+        glfwWindowHint(GLFW_BLUE_BITS, mode->blueBits);
+        glfwWindowHint(GLFW_REFRESH_RATE, mode->refreshRate);
+
+        m_Window = glfwCreateWindow(mode->width, mode->height, m_Title.c_str(), fullscreen ? m_Monitor : NULL, NULL);
+
+        if (m_Window == nullptr)
+        {
+            throw std::runtime_error("failed to create glfw window");
+        }
+        glfwMakeContextCurrent(m_Window);
+        glfwSetFramebufferSizeCallback(m_Window, framebufferSizeCallback);
+
+        if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
+        {
+            throw std::runtime_error("failed to load gl");
+        }
+        glViewport(0, 0, m_Width, m_Height);
     }
 
     MykaEngine::MykaWindow::~MykaWindow()
     {
-        shutdown();
+        glfwDestroyWindow(m_Window);
+        glfwTerminate();
     }
 
     bool MykaWindow::shouldClose() const
@@ -47,37 +77,6 @@ namespace MykaEngine
     GLFWwindow *MykaWindow::getWindow()
     {
         return m_Window;
-    }
-
-    void MykaEngine::MykaWindow::initWindow()
-    {
-        if (!glfwInit())
-        {
-            throw std::runtime_error("failed to initialize glfw");
-        }
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
-        glfwWindowHint(GLFW_OPENGL_CORE_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-
-        m_Window = glfwCreateWindow(m_Width, m_Height, m_Title.c_str(), NULL, NULL);
-        if (m_Window == nullptr)
-        {
-            throw std::runtime_error("failed to create glfw window");
-        }
-        glfwMakeContextCurrent(m_Window);
-        glfwSetFramebufferSizeCallback(m_Window, framebufferSizeCallback);
-
-        if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
-        {
-            throw std::runtime_error("failed to load gl");
-        }
-        glViewport(0, 0, m_Width, m_Height);
-    }
-
-    void MykaWindow::shutdown()
-    {
-        glfwDestroyWindow(m_Window);
-        glfwTerminate();
     }
 
     void MykaWindow::framebufferSizeCallback(GLFWwindow *window, int width, int height)

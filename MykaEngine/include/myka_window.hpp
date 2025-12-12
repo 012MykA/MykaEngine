@@ -12,7 +12,7 @@ namespace MykaEngine
     class MykaWindow
     {
     public:
-        MykaWindow(uint32_t width, uint32_t height, const std::string& title);
+        MykaWindow(uint32_t width, uint32_t height, const std::string& title, bool fullscreen);
         ~MykaWindow();
 
         MykaWindow(const MykaWindow&) = delete;
@@ -29,14 +29,13 @@ namespace MykaEngine
         GLFWwindow* getWindow();
 
     private:
-        void initWindow();
-        void shutdown();
         static void framebufferSizeCallback(GLFWwindow* window, int width, int height);
 
         std::string m_Title;
         uint32_t m_Width;
         uint32_t m_Height;
 
+        GLFWmonitor* m_Monitor;
         GLFWwindow* m_Window;
     };
 } // namespace MykaEngine

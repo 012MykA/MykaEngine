@@ -20,7 +20,7 @@ namespace MykaEngine
         
         void drawScene(const Scene& scene, const Camera camera) const;
 
-    private:
+    public:
         void drawObject(const GameObject& object, const Camera& camera, const Light& light) const;
     };
 } // namespace MykaEngine
