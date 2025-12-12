@@ -48,7 +48,7 @@ int main()
         sun.getTransform().setPosition(light.getPosition());
 
         // Earth
-        Mesh earthMesh = getCubeMesh(/*EARTH_RADIUS, 64, 64*/);
+        Mesh earthMesh = getSphereMesh(EARTH_RADIUS, 64, 64);
         Shader objectShader(DEFAULT_VERTEX_SHADER_PATH, DEFAULT_FRAGMENT_SHADER_PATH);
         Texture earthTexture(EARTH_TEXTURE_PATH);
         Material earthMaterial(std::make_shared<Shader>(objectShader), std::make_shared<Texture>(earthTexture));
@@ -82,6 +82,8 @@ int main()
 
             earth.getTransform().rotate(glm::vec3(0.0f, 1.0f, 0.0f));
 
+            sun.getTransform().rotate(glm::vec3(0.0f, 1.0f, 0.0f) * Timer::getDeltaTime());
+
             // onRender
             renderer.clear();
             { // Object
@@ -98,6 +100,7 @@ int main()
                 material->bindShader();
 
                 glm::mat4 mvp = proj * view * model;
+                glm::mat3 normalMatrix = glm::transpose(glm::inverse(glm::mat3(model)));
 
                 material->m_Shader->setUniformMat4f("u_MVP", mvp);
                 material->m_Shader->setUniformMat4f("u_Model", model);

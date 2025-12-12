@@ -26,4 +26,3 @@ constexpr float REAL_TO_SCENE_SCALE = 100.0f / (6.96f * 1e8f);
 
 constexpr float EARTH_RADIUS = (6.371f * 1e6f) * REAL_TO_SCENE_SCALE;
 constexpr float SUN_RADIUS = (6.96f * 1e8f) * REAL_TO_SCENE_SCALE;
-constexpr float SUN_TO_EARTH_DISTANCE = (1.496 * 1e11) * REAL_TO_SCENE_SCALE;
