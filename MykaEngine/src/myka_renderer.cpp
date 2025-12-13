@@ -34,7 +34,7 @@ namespace MykaEngine
 
         material->bindShader();
         material->setUniforms(model, view, proj, camera.getPosition(), light);
-        material->bindTexture();
+        // material->bindTexture();
         
         mesh->bind();
 
@@ -42,4 +42,6 @@ namespace MykaEngine
 
         mesh->unbind();
     }
+    
+
 } // namespace MykaEngine

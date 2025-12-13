@@ -20,24 +20,54 @@ namespace MykaEngine
 
         m_Shader->setUniformMat4f("u_MVP", mvp);
         m_Shader->setUniformMat4f("u_Model", model);
-        if (hasTexture())
-        {
-            m_Shader->setUniform1i("u_Texture", 0);
-        }
+        // m_Shader->setUniform1i("u_Texture", 0);
         m_Shader->setUniform3f("u_LightColor", light.getColor());
-        m_Shader->setUniform3f("u_ObjectColor", m_Color);
         m_Shader->setUniform3f("u_LightPos", light.getPosition());
         m_Shader->setUniform3f("u_ViewPos", viewPos);
+        m_Shader->setUniform3f("u_Material.ambient", m_Ambient);
+        m_Shader->setUniform3f("u_Material.diffuse", m_Diffuse);
+        m_Shader->setUniform3f("u_Material.specular", m_Specular);
+        m_Shader->setUniform1f("u_Material.shininess", m_Shininess);
     }
 
-    void Material::setColor(const glm::vec3 &color)
+    void Material::setAmbient(const glm::vec3 &ambient)
     {
-        m_Color = color;
+        m_Ambient = ambient;
     }
 
-    const glm::vec3 &Material::getColor() const
+    void Material::setDiffuse(const glm::vec3 &diffuse)
     {
-        return m_Color;
+        m_Diffuse = diffuse;
+    }
+
+    void Material::setSpecular(const glm::vec3 &specular)
+    {
+        m_Specular = specular;
+    }
+
+    void Material::setShininess(float shininess)
+    {
+        m_Shininess = shininess;
+    }
+
+    const glm::vec3 &Material::getAmbient() const
+    {
+        return m_Ambient;
+    }
+
+    const glm::vec3 &Material::getDiffuse() const
+    {
+        return m_Diffuse;
+    }
+
+    const glm::vec3 &Material::getSpecular() const
+    {
+        return m_Specular;
+    }
+
+    float Material::getShininess() const
+    {
+        return m_Shininess;
     }
 
     bool Material::hasTexture() const

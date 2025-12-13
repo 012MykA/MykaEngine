@@ -18,12 +18,12 @@ set(EXTERNAL_SRC
 
 add_subdirectory(MykaEngine)
 
-add_executable(MykaGame
+add_executable(Simulation
     Game/src/main.cpp
     ${EXTERNAL_SRC}
 )
 
-target_link_libraries(MykaGame PRIVATE
+target_link_libraries(Simulation PRIVATE
     MykaEngine
     glfw
 )

@@ -34,36 +34,72 @@ int main()
 
         // Light
         Light light = {
-            glm::vec3(0.0f),
+            glm::vec3(0.0f, 1.0f, 0.0f),
             glm::vec3(1.0f),
             glm::vec3(0.05f),
             glm::vec3(0.8f),
             glm::vec3(1.0f)};
 
         Shader lightShader(LIGHT_VERTEX_SHADER_PATH, LIGHT_FRAGMENT_SHADER_PATH);
-        Texture sunTexture(SUN_TEXTURE_PATH);
-        Material sunMaterial(std::make_shared<Shader>(lightShader), std::make_shared<Texture>(sunTexture));
-        Mesh sunMesh = getSphereMesh(SUN_RADIUS, 64, 64);
-        GameObject sun(std::make_shared<Mesh>(sunMesh), std::make_shared<Material>(sunMaterial));
-        sun.getTransform().setPosition(light.getPosition());
+        Material lightMaterial(std::make_shared<Shader>(lightShader));
+        Mesh sphereMesh = getSphereMesh(1.0, 32, 32);
+        GameObject lightSphere(std::make_shared<Mesh>(sphereMesh), std::make_shared<Material>(lightMaterial));
+        lightSphere.getTransform().setScale(glm::vec3(0.2f));
+        lightSphere.getTransform().setPosition(light.getPosition());
 
-        // Earth
-        Mesh earthMesh = getSphereMesh(EARTH_RADIUS, 64, 64);
         Shader objectShader(DEFAULT_VERTEX_SHADER_PATH, DEFAULT_FRAGMENT_SHADER_PATH);
-        Texture earthTexture(EARTH_TEXTURE_PATH);
-        Material earthMaterial(std::make_shared<Shader>(objectShader), std::make_shared<Texture>(earthTexture));
-        GameObject earth(std::make_shared<Mesh>(earthMesh), std::make_shared<Material>(earthMaterial));
-        earth.getTransform().setPosition(sun.getTransform().getPosition() + glm::vec3(150.0f, 0.0f, 0.0f));
 
-        camera.setPosition(earth.getTransform().getPosition());
+        // Materials
+
+        Material emerald(std::make_shared<Shader>(objectShader));
+        emerald.setAmbient(glm::vec3(0.0215, 0.1745, 0.0215));
+        emerald.setDiffuse(glm::vec3(0.07568, 0.61424, 0.07568));
+        emerald.setSpecular(glm::vec3(0.633, 0.727811, 0.633));
+        emerald.setShininess(0.6f * 128.0f);
+
+        Material ruby(std::make_shared<Shader>(objectShader));
+        ruby.setAmbient(glm::vec3(0.1745, 0.01175, 0.01175));
+        ruby.setDiffuse(glm::vec3(0.61424, 0.04136, 0.04136));
+        ruby.setSpecular(glm::vec3(0.727811, 0.626959, 0.626959));
+        ruby.setShininess(0.6f * 128.0f);
+
+        Material cyanPlastic(std::make_shared<Shader>(objectShader));
+        cyanPlastic.setAmbient(glm::vec3(0.0, 0.1, 0.06));
+        cyanPlastic.setDiffuse(glm::vec3(0.0, 0.50980392, 0.50980392));
+        cyanPlastic.setSpecular(glm::vec3(0.50196078, 0.50196078, 0.50196078));
+        cyanPlastic.setShininess(0.25f * 128.0f);
+
+        Material yellowRubber(std::make_shared<Shader>(objectShader));
+        yellowRubber.setAmbient(glm::vec3(0.05, 0.05, 0.0));
+        yellowRubber.setDiffuse(glm::vec3(0.5, 0.5, 0.4));
+        yellowRubber.setSpecular(glm::vec3(0.7, 0.7, 0.04));
+        yellowRubber.setShininess(0.078125f * 128.0f);
+
+        // Meshes
+        Mesh cubeMesh = getSphereMesh(0.5f, 64, 64);
+
+        // Objects
+        GameObject emeraldCube(std::make_shared<Mesh>(cubeMesh), std::make_shared<Material>(emerald));
+        emeraldCube.getTransform().setPosition(glm::vec3(2.0f, 0.0f, 0.0f));
+
+        GameObject rubyCube(std::make_shared<Mesh>(cubeMesh), std::make_shared<Material>(ruby));
+        rubyCube.getTransform().setPosition(glm::vec3(-2.0f, 0.0f, 0.0f));
+
+        GameObject cyanPlasticCube(std::make_shared<Mesh>(cubeMesh), std::make_shared<Material>(cyanPlastic));
+        cyanPlasticCube.getTransform().setPosition(glm::vec3(0.0f, 0.0f, 2.0f));
+
+        GameObject yellowRubberCube(std::make_shared<Mesh>(cubeMesh), std::make_shared<Material>(yellowRubber));
+        yellowRubberCube.getTransform().setPosition(glm::vec3(0.0f, 0.0f, -2.0f));
+
+        camera.setPosition(glm::vec3(0.0f, 1.0f, 2.0f));
 
         double previousTime = glfwGetTime();
         int fps = 0;
-        glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+        glClearColor(0.20f, 0.20f, 0.20f, 1.0f);
         while (!window.shouldClose())
         {
             double currentTime = glfwGetTime();
-            fps++; 
+            fps++;
             if (currentTime - previousTime >= 1.0)
             {
                 window.setWindowTitle(std::format("MykaEngine fps: {}", fps));
@@ -80,16 +116,15 @@ int main()
             Timer::onUpdate();
             camera.onUpdate();
 
-            earth.getTransform().rotate(glm::vec3(0.0f, 1.0f, 0.0f));
-
-            sun.getTransform().rotate(glm::vec3(0.0f, 1.0f, 0.0f) * Timer::getDeltaTime());
-
             // onRender
             renderer.clear();
-            renderer.drawObject(earth, camera, light);
+            renderer.drawObject(emeraldCube, camera, light);
+            renderer.drawObject(rubyCube, camera, light);
+            renderer.drawObject(cyanPlasticCube, camera, light);
+            renderer.drawObject(yellowRubberCube, camera, light);
 
             { // light
-                GameObject object = sun;
+                GameObject object = lightSphere;
 
                 const auto &transform = object.getTransform();
                 const auto &material = object.getMaterial();
@@ -104,10 +139,10 @@ int main()
                 glm::mat4 mvp = proj * view * model;
 
                 material->m_Shader->setUniformMat4f("u_MVP", mvp);
-                material->m_Shader->setUniform1i("u_Texture", 0);
+                // material->m_Shader->setUniform1i("u_Texture", 0);
                 material->m_Shader->setUniform3f("u_LightColor", light.getColor());
 
-                material->bindTexture();
+                // material->bindTexture();
 
                 mesh->bind();
 

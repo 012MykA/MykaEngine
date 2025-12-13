@@ -14,7 +14,8 @@ namespace MykaEngine
               const glm::vec3 &color,
               const glm::vec3 &ambient,
               const glm::vec3 &diffuse,
-              const glm::vec3 &specular);
+              const glm::vec3 &specular
+        );
 
     public:
         void setPosition(const glm::vec3 &position);

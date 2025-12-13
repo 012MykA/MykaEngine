@@ -19,13 +19,21 @@ namespace MykaEngine
     public:
         void bindShader() const;
         void bindTexture() const;
-        virtual void setUniforms(const glm::mat4 &model, const glm::mat4 &view, const glm::mat4 &proj, const glm::vec3 &viewPos, const Light &light) const;
+
+        void setUniforms(const glm::mat4 &model, const glm::mat4 &view, const glm::mat4 &proj, const glm::vec3 &viewPos, const Light &light) const;
 
     public:
-        void setColor(const glm::vec3 &color);
-
-        const glm::vec3 &getColor() const;
         bool hasTexture() const;
+
+        void setAmbient(const glm::vec3 &ambient);
+        void setDiffuse(const glm::vec3 &diffuse);
+        void setSpecular(const glm::vec3 &specular);
+        void setShininess(float shininess);
+
+        const glm::vec3 &getAmbient() const;
+        const glm::vec3 &getDiffuse() const;
+        const glm::vec3 &getSpecular() const;
+        float getShininess() const;
 
     public: // TODO: private
         std::shared_ptr<Shader> m_Shader;
@@ -35,6 +43,5 @@ namespace MykaEngine
         glm::vec3 m_Diffuse{0.50754f};
         glm::vec3 m_Specular{0.508273f};
         float m_Shininess = 0.4f;
-        glm::vec3 m_Color{1.0f};
     };
 } // namespace MykaEngine
