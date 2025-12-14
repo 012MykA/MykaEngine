@@ -2,11 +2,20 @@
 
 namespace MykaEngine
 {
+    Texture::Texture(const std::filesystem::path &path)
+    {
+        loadFromFile(path);
+    }
 
-    Texture::Texture(const std::string &path) : m_FilePath(path)
+    Texture::~Texture()
+    {
+        glDeleteTextures(1, &m_RendererID);
+    }
+
+    void Texture::loadFromFile(const std::filesystem::path &path)
     {
         stbi_set_flip_vertically_on_load(1);
-        m_LocalBuffer = stbi_load(path.c_str(), &m_Width, &m_Height, &m_BPP, 4);
+        m_LocalBuffer = stbi_load(path.string().c_str(), &m_Width, &m_Height, &m_BPP, 4);
 
         glGenTextures(1, &m_RendererID);
         glBindTexture(GL_TEXTURE_2D, m_RendererID);
@@ -21,11 +30,6 @@ namespace MykaEngine
 
         if (m_LocalBuffer)
             stbi_image_free(m_LocalBuffer);
-    }
-
-    Texture::~Texture()
-    {
-        glDeleteTextures(1, &m_RendererID);
     }
 
     void Texture::bind(GLuint slot) const

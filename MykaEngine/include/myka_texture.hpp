@@ -5,22 +5,25 @@
 
 // std
 #include <string>
+#include <filesystem>
 
 namespace MykaEngine
 {
     class Texture
     {
     public:
-        Texture(const std::string& path);
+        Texture();
+        Texture(const std::filesystem::path &path);
         ~Texture();
+
+        void loadFromFile(const std::filesystem::path &path);
 
         void bind(GLuint slot = 0) const;
         void unbind() const;
 
     private:
         GLuint m_RendererID = 0;
-        std::string m_FilePath;
-        unsigned char* m_LocalBuffer = nullptr;
+        unsigned char *m_LocalBuffer = nullptr;
         int m_Width = 0;
         int m_Height = 0;
         int m_BPP = 0;
