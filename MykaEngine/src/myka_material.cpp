@@ -20,14 +20,21 @@ namespace MykaEngine
 
         m_Shader->setUniformMat4f("u_MVP", mvp);
         m_Shader->setUniformMat4f("u_Model", model);
-        // m_Shader->setUniform1i("u_Texture", 0);
-        m_Shader->setUniform3f("u_LightColor", light.getColor());
-        m_Shader->setUniform3f("u_LightPos", light.getPosition());
-        m_Shader->setUniform3f("u_ViewPos", viewPos);
+        
+        // Material
         m_Shader->setUniform3f("u_Material.ambient", m_Ambient);
         m_Shader->setUniform3f("u_Material.diffuse", m_Diffuse);
         m_Shader->setUniform3f("u_Material.specular", m_Specular);
         m_Shader->setUniform1f("u_Material.shininess", m_Shininess);
+        
+        // Light
+        m_Shader->setUniform3f("u_Light.position", light.getPosition());
+        m_Shader->setUniform3f("u_Light.ambient", light.getAmbient());
+        m_Shader->setUniform3f("u_Light.diffuse", light.getDiffuse());
+        m_Shader->setUniform3f("u_Light.specular", light.getSpecular());
+        
+        m_Shader->setUniform3f("u_ViewPos", viewPos);
+        // m_Shader->setUniform1i("u_Texture", 0);
     }
 
     void Material::setAmbient(const glm::vec3 &ambient)

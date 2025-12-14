@@ -3,11 +3,10 @@
 namespace MykaEngine
 {
     Light::Light(const glm::vec3 &position,
-                 const glm::vec3 &color,
                  const glm::vec3 &ambient,
                  const glm::vec3 &diffuse,
                  const glm::vec3 &specular)
-        : m_Position(position), m_Color(color), m_Ambient(ambient), m_Diffuse(diffuse), m_Specular(specular) {}
+        : m_Position(position), m_Ambient(ambient), m_Diffuse(diffuse), m_Specular(specular) {}
 
     void Light::setPosition(const glm::vec3 &position)
     {
@@ -17,11 +16,6 @@ namespace MykaEngine
     const glm::vec3 &Light::getPosition() const
     {
         return m_Position;
-    }
-
-    const glm::vec3 &Light::getColor() const
-    {
-        return m_Color;
     }
 
     const glm::vec3 &Light::getAmbient() const

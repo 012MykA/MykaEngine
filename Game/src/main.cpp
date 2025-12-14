@@ -35,10 +35,10 @@ int main()
         // Light
         Light light = {
             glm::vec3(0.0f, 1.0f, 0.0f),
-            glm::vec3(1.0f),
-            glm::vec3(0.05f),
-            glm::vec3(0.8f),
-            glm::vec3(1.0f)};
+            glm::vec3(0.2f),
+            glm::vec3(0.5f),
+            glm::vec3(1.0f)
+        };
 
         Shader lightShader(LIGHT_VERTEX_SHADER_PATH, LIGHT_FRAGMENT_SHADER_PATH);
         Material lightMaterial(std::make_shared<Shader>(lightShader));
@@ -76,19 +76,19 @@ int main()
         yellowRubber.setShininess(0.078125f * 128.0f);
 
         // Meshes
-        Mesh cubeMesh = getSphereMesh(0.5f, 64, 64);
+        Mesh objectsMesh = getSphereMesh(0.5f, 64, 64);
 
         // Objects
-        GameObject emeraldCube(std::make_shared<Mesh>(cubeMesh), std::make_shared<Material>(emerald));
+        GameObject emeraldCube(std::make_shared<Mesh>(objectsMesh), std::make_shared<Material>(emerald));
         emeraldCube.getTransform().setPosition(glm::vec3(2.0f, 0.0f, 0.0f));
 
-        GameObject rubyCube(std::make_shared<Mesh>(cubeMesh), std::make_shared<Material>(ruby));
+        GameObject rubyCube(std::make_shared<Mesh>(objectsMesh), std::make_shared<Material>(ruby));
         rubyCube.getTransform().setPosition(glm::vec3(-2.0f, 0.0f, 0.0f));
 
-        GameObject cyanPlasticCube(std::make_shared<Mesh>(cubeMesh), std::make_shared<Material>(cyanPlastic));
+        GameObject cyanPlasticCube(std::make_shared<Mesh>(objectsMesh), std::make_shared<Material>(cyanPlastic));
         cyanPlasticCube.getTransform().setPosition(glm::vec3(0.0f, 0.0f, 2.0f));
 
-        GameObject yellowRubberCube(std::make_shared<Mesh>(cubeMesh), std::make_shared<Material>(yellowRubber));
+        GameObject yellowRubberCube(std::make_shared<Mesh>(objectsMesh), std::make_shared<Material>(yellowRubber));
         yellowRubberCube.getTransform().setPosition(glm::vec3(0.0f, 0.0f, -2.0f));
 
         camera.setPosition(glm::vec3(0.0f, 1.0f, 2.0f));
@@ -139,8 +139,6 @@ int main()
                 glm::mat4 mvp = proj * view * model;
 
                 material->m_Shader->setUniformMat4f("u_MVP", mvp);
-                // material->m_Shader->setUniform1i("u_Texture", 0);
-                material->m_Shader->setUniform3f("u_LightColor", light.getColor());
 
                 // material->bindTexture();
 
