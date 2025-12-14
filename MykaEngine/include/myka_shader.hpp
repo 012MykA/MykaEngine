@@ -10,6 +10,8 @@
 #include <string>
 #include <fstream>
 #include <sstream>
+#include <stdexcept>
+#include <format>
 #include <unordered_map>
 
 namespace MykaEngine
@@ -17,28 +19,36 @@ namespace MykaEngine
     class Shader
     {
     public:
+        Shader() = default;
         Shader(const std::filesystem::path &vertexPath, const std::filesystem::path &fragmentPath);
         ~Shader();
 
+        void loadFromFile(const std::filesystem::path &vertexPath, const std::filesystem::path &fragmentPath);
+        void loadFromSource(const std::string& vertexData, const std::string& fragmentData);
+
         void use() const;
+        void unuse() const;
 
     public:
-        void setUniform3f(const std::string &name, const glm::vec3 &value);
-        void setUniform4f(const std::string &name, const glm::vec4 &value);
-        void setUniform1i(const std::string &name, int value);
-        void setUniform1f(const std::string &name, float value);
-        void setUniformMat3f(const std::string &name, const glm::mat3 &matrix);
-        void setUniformMat4f(const std::string &name, const glm::mat4 &matrix);
+        GLuint getID() const;
+
+        void setUniformBool(const std::string &name, bool value) const;
+        void setUniformInt(const std::string &name, int value) const;
+        void setUniformFloat(const std::string &name, float value) const;
+        void setUniformVec2(const std::string &name, const glm::vec2 &value) const;
+        void setUniformVec3(const std::string &name, const glm::vec3 &value) const;
+        void setUniformVec4(const std::string &name, const glm::vec4 &value) const;
+        void setUniformMat3(const std::string &name, const glm::mat3 &matrix) const;
+        void setUniformMat4(const std::string &name, const glm::mat4 &matrix) const;
+        
+        GLint getUniformLocation(const std::string &name) const;
 
     private:
-        void compileShaders();
-        GLint getUniformLocation(const std::string &name);
-        std::string getFileContent(const std::filesystem::path &path);
+        GLuint compileShader(unsigned int type, const std::string& source);
+        void linkProgram();
 
+    private:
         GLuint m_Program;
-        std::unordered_map<std::string, GLint> m_UniformLocationCache;
-
-        std::string m_VertexData;
-        std::string m_FragmentData;
+        mutable std::unordered_map<std::string, GLint> m_UniformLocationCache;
     };
 } // namespace MykaEngine

@@ -4,14 +4,66 @@ namespace MykaEngine
 {
     Shader::Shader(const std::filesystem::path &vertexPath, const std::filesystem::path &fragmentPath)
     {
-        this->m_VertexData = getFileContent(vertexPath);
-        this->m_FragmentData = getFileContent(fragmentPath);
-        compileShaders();
+        loadFromFile(vertexPath, fragmentPath);
     }
 
     Shader::~Shader()
     {
-        glUseProgram(0);
+        if (m_Program != 0)
+        {
+            glDeleteProgram(m_Program);
+        }
+    }
+
+    void Shader::loadFromFile(const std::filesystem::path &vertexPath, const std::filesystem::path &fragmentPath)
+    {
+        // Vertex
+        std::string vertexCode;
+        std::ifstream vShaderFile(vertexPath);
+        if (vShaderFile.is_open())
+        {
+            std::stringstream vShaderStream;
+            vShaderStream << vShaderFile.rdbuf();
+            vertexCode = vShaderStream.str();
+            vShaderFile.close();
+        }
+        else
+        {
+            std::cerr << "Failed to open vertex shader file: " << vertexPath << std::endl;
+            return;
+        }
+
+        // Fragment
+        std::string fragmentCode;
+        std::ifstream fShaderFile(fragmentPath);
+        if (fShaderFile.is_open())
+        {
+            std::stringstream fShaderStream;
+            fShaderStream << fShaderFile.rdbuf();
+            fragmentCode = fShaderStream.str();
+            fShaderFile.close();
+        }
+        else
+        {
+            std::cerr << "Failed to open fragment shader file: " << fragmentPath << std::endl;
+            return;
+        }
+
+        loadFromSource(vertexCode, fragmentCode);
+    }
+
+    void Shader::loadFromSource(const std::string &vertexData, const std::string &fragmentData)
+    {
+        GLuint vertexShader = compileShader(GL_VERTEX_SHADER, vertexData);
+        GLuint fragmentShader = compileShader(GL_FRAGMENT_SHADER, fragmentData);
+
+        m_Program = glCreateProgram();
+        glAttachShader(m_Program, vertexShader);
+        glAttachShader(m_Program, fragmentShader);
+        linkProgram();
+
+        glDeleteShader(vertexShader);
+        glDeleteShader(fragmentShader);
     }
 
     void Shader::use() const
@@ -19,92 +71,57 @@ namespace MykaEngine
         glUseProgram(m_Program);
     }
 
-    void Shader::setUniform3f(const std::string &name, const glm::vec3 &value)
+    void Shader::unuse() const
     {
-        glUniform3f(getUniformLocation(name), value.x, value.y, value.z);
+        glUseProgram(0);
     }
 
-    void Shader::setUniform4f(const std::string &name, const glm::vec4 &value)
+    GLuint Shader::getID() const
     {
-        glUniform4f(getUniformLocation(name), value.x, value.y, value.z, value.w);
+        return m_Program;
     }
 
-    void Shader::setUniform1i(const std::string &name, int value)
+    void Shader::setUniformBool(const std::string &name, bool value) const
+    {
+        glUniform1i(getUniformLocation(name), (int)value);
+    }
+    
+    void Shader::setUniformInt(const std::string &name, int value) const
     {
         glUniform1i(getUniformLocation(name), value);
     }
 
-    void Shader::setUniform1f(const std::string &name, float value)
+    void Shader::setUniformFloat(const std::string &name, float value) const
     {
         glUniform1f(getUniformLocation(name), value);
     }
 
-    void Shader::setUniformMat3f(const std::string &name, const glm::mat3 &matrix)
+    void Shader::setUniformVec2(const std::string &name, const glm::vec2 &value) const
+    {
+        glUniform2f(getUniformLocation(name), value.x, value.y);
+    }
+
+    void Shader::setUniformVec3(const std::string &name, const glm::vec3 &value) const
+    {
+        glUniform3f(getUniformLocation(name), value.x, value.y, value.z);
+    }
+
+    void Shader::setUniformVec4(const std::string &name, const glm::vec4 &value) const
+    {
+        glUniform4f(getUniformLocation(name), value.x, value.y, value.z, value.w);
+    }
+
+    void Shader::setUniformMat3(const std::string &name, const glm::mat3 &matrix) const
     {
         glUniformMatrix3fv(getUniformLocation(name), 1, GL_FALSE, glm::value_ptr(matrix));
     }
 
-    void Shader::setUniformMat4f(const std::string &name, const glm::mat4 &matrix)
+    void Shader::setUniformMat4(const std::string &name, const glm::mat4 &matrix) const
     {
         glUniformMatrix4fv(getUniformLocation(name), 1, GL_FALSE, glm::value_ptr(matrix));
     }
 
-    void Shader::compileShaders()
-    {
-        GLuint vs;
-        GLuint fs;
-        GLint successful;
-        GLchar GLInfoLog[512];
-
-        vs = glCreateShader(GL_VERTEX_SHADER);
-        fs = glCreateShader(GL_FRAGMENT_SHADER);
-
-        const char *vs_char = m_VertexData.c_str();
-        const char *fs_char = m_FragmentData.c_str();
-
-        glShaderSource(vs, 1, &vs_char, 0);
-        glShaderSource(fs, 1, &fs_char, 0);
-
-        glCompileShader(vs);
-
-        glGetShaderiv(vs, GL_COMPILE_STATUS, &successful);
-
-        if (!successful)
-        {
-            glGetShaderInfoLog(vs, 512, NULL, GLInfoLog);
-            std::cerr << "\nCOMPILATION ERROR IN VERTEX SHADER\n"
-                      << GLInfoLog << std::endl;
-        }
-
-        glCompileShader(fs);
-        glGetShaderiv(fs, GL_COMPILE_STATUS, &successful);
-
-        if (!successful)
-        {
-            glGetShaderInfoLog(fs, 512, NULL, GLInfoLog);
-            std::cerr << "\nCOMPILATION ERROR IN FRAGMENT SHADER\n"
-                      << GLInfoLog << std::endl;
-        }
-
-        m_Program = glCreateProgram();
-        glAttachShader(m_Program, vs);
-        glAttachShader(m_Program, fs);
-        glLinkProgram(m_Program);
-
-        glGetProgramiv(m_Program, GL_LINK_STATUS, &successful);
-
-        if (!successful)
-        {
-            glGetProgramInfoLog(m_Program, 512, NULL, GLInfoLog);
-            std::cerr << "ERROR: SHADER LINKING FAILED: \n"
-                      << GLInfoLog << std::endl;
-        }
-
-        glDeleteShader(vs);
-        glDeleteShader(fs);
-    }
-
-    GLint Shader::getUniformLocation(const std::string &name)
+    GLint Shader::getUniformLocation(const std::string &name) const
     {
         if (m_UniformLocationCache.find(name) != m_UniformLocationCache.end())
         {
@@ -120,20 +137,36 @@ namespace MykaEngine
         return location;
     }
 
-    std::string Shader::getFileContent(const std::filesystem::path &path)
+    GLuint Shader::compileShader(unsigned int type, const std::string &source)
     {
-        std::ifstream file(path);
+        GLuint id = glCreateShader(type);
+        const char* src = source.c_str();
+        glShaderSource(id, 1, &src, nullptr);
+        glCompileShader(id);
 
-        if (!file.is_open())
+        int success;
+        char infoLog[512];
+        glGetShaderiv(id, GL_COMPILE_STATUS, &success);
+        if (!success)
         {
-            std::cerr << "failed to open file: " << path << std::endl;
-            return "";
+            glGetShaderInfoLog(id, 512, nullptr, infoLog);
+            throw std::runtime_error(std::format("ERROR::SHADER::COMPILATION_FAILED\n{}", infoLog));
         }
-        std::stringstream buffer;
-        buffer << file.rdbuf();
 
-        file.close();
+        return id;
+    }
 
-        return buffer.str();
+    void Shader::linkProgram()
+    {
+        glLinkProgram(m_Program);
+
+        int success;
+        char infoLog[512];
+        glGetProgramiv(m_Program, GL_LINK_STATUS, &success);
+        if (!success)
+        {
+            glGetProgramInfoLog(m_Program, 512, nullptr, infoLog);
+            throw std::runtime_error(std::format("ERROR::PROGRAM::LINKING_FAILED\n{}", infoLog));
+        }
     }
 } // namespace MykaEngine

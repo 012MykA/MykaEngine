@@ -42,9 +42,8 @@ int main()
 
         Shader lightShader(LIGHT_VERTEX_SHADER_PATH, LIGHT_FRAGMENT_SHADER_PATH);
         Material lightMaterial(std::make_shared<Shader>(lightShader));
-        Mesh sphereMesh = getSphereMesh(1.0, 32, 32);
+        Mesh sphereMesh = getSphereMesh(0.2, 32, 32);
         GameObject lightSphere(std::make_shared<Mesh>(sphereMesh), std::make_shared<Material>(lightMaterial));
-        lightSphere.getTransform().setScale(glm::vec3(0.2f));
         lightSphere.getTransform().setPosition(light.getPosition());
 
         Shader objectShader(DEFAULT_VERTEX_SHADER_PATH, DEFAULT_FRAGMENT_SHADER_PATH);
@@ -138,7 +137,7 @@ int main()
 
                 glm::mat4 mvp = proj * view * model;
 
-                material->m_Shader->setUniformMat4f("u_MVP", mvp);
+                material->m_Shader->setUniformMat4("u_MVP", mvp);
 
                 // material->bindTexture();
 
