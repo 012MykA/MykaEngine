@@ -150,7 +150,7 @@ namespace MykaEngine
         if (!success)
         {
             glGetShaderInfoLog(id, 512, nullptr, infoLog);
-            throw std::runtime_error(std::format("ERROR::SHADER::COMPILATION_FAILED\n{}", infoLog));
+            throw std::runtime_error("ERROR::SHADER::COMPILATION_FAILED\n" + (std::string)infoLog);
         }
 
         return id;
@@ -166,7 +166,7 @@ namespace MykaEngine
         if (!success)
         {
             glGetProgramInfoLog(m_Program, 512, nullptr, infoLog);
-            throw std::runtime_error(std::format("ERROR::PROGRAM::LINKING_FAILED\n{}", infoLog));
+            throw std::runtime_error("ERROR::PROGRAM::LINKING_FAILED\n" + (std::string)infoLog);
         }
     }
 } // namespace MykaEngine

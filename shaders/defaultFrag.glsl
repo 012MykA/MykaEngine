@@ -19,11 +19,11 @@ struct Light
 
 uniform Light u_Light;
 
-in vec2 v_TexCoord;
+// in vec2 v_TexCoord;
 in vec3 v_Normal;
 in vec3 v_FragPos;
 
-uniform sampler2D u_Texture;
+// uniform sampler2D u_Texture;
 uniform vec3 u_ViewPos;
 
 out vec4 FragColor;
@@ -46,7 +46,7 @@ void main()
     vec3 specular = u_Light.specular * (spec * u_Material.specular);
 
     vec3 lightingResult = ambient + diffuse + specular;
-    vec4 texColor = texture(u_Texture, v_TexCoord);
+    // vec4 texColor = texture(u_Texture, v_TexCoord);
 
     FragColor = vec4(lightingResult, 1.0);
 }

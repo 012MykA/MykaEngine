@@ -17,10 +17,10 @@ namespace MykaEngine
         ~Renderer() = default;
 
         void clear() const;
-        
-        void drawScene(const Scene& scene, const Camera camera) const;
 
-    public:
-        void drawObject(const GameObject& object, const Camera& camera, const Light &light) const;
+        void drawScene(const Scene &scene, const Camera &camera) const;
+
+    private:
+        void drawObject(const GameObject &object, const Camera &camera) const;
     };
 } // namespace MykaEngine

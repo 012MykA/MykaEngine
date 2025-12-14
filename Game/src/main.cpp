@@ -19,6 +19,8 @@ static Mesh getPlatformMesh();
 static Mesh getCubeMesh();
 static Mesh getSphereMesh(float radius, int sectors, int stacks);
 
+static void setLightUniforms(Material& material, const Light &light);
+
 int main()
 {
     try
@@ -26,6 +28,7 @@ int main()
         MykaWindow window(WINDOW_WIDTH, WINDOW_HEIGHT, "MykaEngine", true);
         Renderer renderer;
         Camera camera(WINDOW_WIDTH, WINDOW_HEIGHT, window.getWindow());
+        Scene scene;
 
         // Blending + Depth
         glEnable(GL_BLEND);
@@ -37,42 +40,45 @@ int main()
             glm::vec3(0.0f, 1.0f, 0.0f),
             glm::vec3(0.2f),
             glm::vec3(0.5f),
-            glm::vec3(1.0f)
-        };
+            glm::vec3(1.0f)};
 
         Shader lightShader(LIGHT_VERTEX_SHADER_PATH, LIGHT_FRAGMENT_SHADER_PATH);
         Material lightMaterial(std::make_shared<Shader>(lightShader));
         Mesh sphereMesh = getSphereMesh(0.2, 32, 32);
         GameObject lightSphere(std::make_shared<Mesh>(sphereMesh), std::make_shared<Material>(lightMaterial));
         lightSphere.getTransform().setPosition(light.getPosition());
-
+        scene.addGameObject(std::make_shared<GameObject>(lightSphere));
+        
         Shader objectShader(DEFAULT_VERTEX_SHADER_PATH, DEFAULT_FRAGMENT_SHADER_PATH);
-
+        
         // Materials
-
         Material emerald(std::make_shared<Shader>(objectShader));
-        emerald.setAmbient(glm::vec3(0.0215, 0.1745, 0.0215));
-        emerald.setDiffuse(glm::vec3(0.07568, 0.61424, 0.07568));
-        emerald.setSpecular(glm::vec3(0.633, 0.727811, 0.633));
-        emerald.setShininess(0.6f * 128.0f);
-
+        emerald.setUniform("u_Material.ambient", glm::vec3(0.0215, 0.1745, 0.0215));
+        emerald.setUniform("u_Material.diffuse", glm::vec3(0.07568, 0.61424, 0.07568));
+        emerald.setUniform("u_Material.specular", glm::vec3(0.633, 0.727811, 0.633));
+        emerald.setUniform("u_Material.shininess", 0.6f * 128.0f);
+        setLightUniforms(emerald, light);
+        
         Material ruby(std::make_shared<Shader>(objectShader));
-        ruby.setAmbient(glm::vec3(0.1745, 0.01175, 0.01175));
-        ruby.setDiffuse(glm::vec3(0.61424, 0.04136, 0.04136));
-        ruby.setSpecular(glm::vec3(0.727811, 0.626959, 0.626959));
-        ruby.setShininess(0.6f * 128.0f);
+        ruby.setUniform("u_Material.ambient", glm::vec3(0.1745, 0.01175, 0.01175));
+        ruby.setUniform("u_Material.diffuse", glm::vec3(0.61424, 0.04136, 0.04136));
+        ruby.setUniform("u_Material.specular", glm::vec3(0.727811, 0.626959, 0.626959));
+        ruby.setUniform("u_Material.shininess", 0.6f * 128.0f);
+        setLightUniforms(ruby, light);
 
         Material cyanPlastic(std::make_shared<Shader>(objectShader));
-        cyanPlastic.setAmbient(glm::vec3(0.0, 0.1, 0.06));
-        cyanPlastic.setDiffuse(glm::vec3(0.0, 0.50980392, 0.50980392));
-        cyanPlastic.setSpecular(glm::vec3(0.50196078, 0.50196078, 0.50196078));
-        cyanPlastic.setShininess(0.25f * 128.0f);
+        cyanPlastic.setUniform("u_Material.ambient", glm::vec3(0.0, 0.1, 0.06));
+        cyanPlastic.setUniform("u_Material.diffuse", glm::vec3(0.0, 0.50980392, 0.50980392));
+        cyanPlastic.setUniform("u_Material.specular", glm::vec3(0.50196078, 0.50196078, 0.50196078));
+        cyanPlastic.setUniform("u_Material.shininess", 0.25f * 128.0f);
+        setLightUniforms(cyanPlastic, light);
 
         Material yellowRubber(std::make_shared<Shader>(objectShader));
-        yellowRubber.setAmbient(glm::vec3(0.05, 0.05, 0.0));
-        yellowRubber.setDiffuse(glm::vec3(0.5, 0.5, 0.4));
-        yellowRubber.setSpecular(glm::vec3(0.7, 0.7, 0.04));
-        yellowRubber.setShininess(0.078125f * 128.0f);
+        yellowRubber.setUniform("u_Material.ambient", glm::vec3(0.05, 0.05, 0.0));
+        yellowRubber.setUniform("u_Material.diffuse", glm::vec3(0.5, 0.5, 0.4));
+        yellowRubber.setUniform("u_Material.specular", glm::vec3(0.7, 0.7, 0.04));
+        yellowRubber.setUniform("u_Material.shininess", 0.078125f * 128.0f);
+        setLightUniforms(yellowRubber, light);
 
         // Meshes
         Mesh objectsMesh = getSphereMesh(0.5f, 64, 64);
@@ -89,6 +95,11 @@ int main()
 
         GameObject yellowRubberCube(std::make_shared<Mesh>(objectsMesh), std::make_shared<Material>(yellowRubber));
         yellowRubberCube.getTransform().setPosition(glm::vec3(0.0f, 0.0f, -2.0f));
+
+        scene.addGameObject(std::make_shared<GameObject>(emeraldCube));
+        scene.addGameObject(std::make_shared<GameObject>(rubyCube));
+        scene.addGameObject(std::make_shared<GameObject>(cyanPlasticCube));
+        scene.addGameObject(std::make_shared<GameObject>(yellowRubberCube));
 
         camera.setPosition(glm::vec3(0.0f, 1.0f, 2.0f));
 
@@ -117,36 +128,7 @@ int main()
 
             // onRender
             renderer.clear();
-            renderer.drawObject(emeraldCube, camera, light);
-            renderer.drawObject(rubyCube, camera, light);
-            renderer.drawObject(cyanPlasticCube, camera, light);
-            renderer.drawObject(yellowRubberCube, camera, light);
-
-            { // light
-                GameObject object = lightSphere;
-
-                const auto &transform = object.getTransform();
-                const auto &material = object.getMaterial();
-                const auto &mesh = object.getMesh();
-
-                glm::mat4 model = transform.getModelMatrix();
-                glm::mat4 view = camera.getViewMatrix();
-                glm::mat4 proj = camera.getProjectionMatrix();
-
-                material->bindShader();
-
-                glm::mat4 mvp = proj * view * model;
-
-                material->m_Shader->setUniformMat4("u_MVP", mvp);
-
-                // material->bindTexture();
-
-                mesh->bind();
-
-                glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(mesh->getIndexCount()), GL_UNSIGNED_INT, 0);
-
-                mesh->unbind();
-            }
+            renderer.drawScene(scene, camera);
 
             window.swapBuffers();
         }
@@ -273,4 +255,12 @@ Mesh getSphereMesh(float radius, int sectors, int stacks)
     }
 
     return {vertices, indices};
+}
+
+void setLightUniforms(Material& material, const Light &light)
+{
+    material.setUniform("u_Light.position", light.getPosition());
+    material.setUniform("u_Light.ambient", light.getAmbient());
+    material.setUniform("u_Light.diffuse", light.getDiffuse());
+    material.setUniform("u_Light.specular", light.getSpecular());
 }
