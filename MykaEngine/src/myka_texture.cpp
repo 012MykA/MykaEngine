@@ -34,6 +34,10 @@ namespace MykaEngine
 
     void Texture::bind(GLuint slot) const
     {
+        if (!m_LocalBuffer)
+        {
+            throw std::runtime_error("failed to bind shader that not initialized");
+        }
         glActiveTexture(GL_TEXTURE0 + slot);
         glBindTexture(GL_TEXTURE_2D, m_RendererID);
     }

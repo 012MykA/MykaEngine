@@ -44,6 +44,7 @@ namespace MykaEngine
         glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(mesh->getIndexCount()), GL_UNSIGNED_INT, 0);
 
         mesh->unbind();
+        material->unbindTextures();
         material->getShader()->unuse();
     }
 } // namespace MykaEngine

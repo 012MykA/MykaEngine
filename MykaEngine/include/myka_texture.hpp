@@ -12,7 +12,7 @@ namespace MykaEngine
     class Texture
     {
     public:
-        Texture();
+        Texture() = default;
         Texture(const std::filesystem::path &path);
         ~Texture();
 

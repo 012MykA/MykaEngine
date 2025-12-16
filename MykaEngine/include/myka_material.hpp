@@ -32,6 +32,7 @@ namespace MykaEngine
 
         void setTexture(const std::string& name, std::shared_ptr<Texture> texture);
         void setTextureSlot(const std::string& name, GLuint slot);
+        void unbindTextures();
 
         void setUniform(const std::string& name, const UniformValue& value);
         void applyUnuiforms() const;
@@ -46,33 +47,5 @@ namespace MykaEngine
         std::unordered_map<std::string, std::shared_ptr<Texture>> m_Textures;
         std::unordered_map<std::string, GLuint> m_TextureSlots;
         GLuint m_NextTextureSlot = 0;
-
-    // public:
-    //     void bindShader() const;
-    //     void bindTexture() const;
-
-    //     void setUniforms(const glm::mat4 &model, const glm::mat4 &view, const glm::mat4 &proj, const glm::vec3 &viewPos, const Light &light) const;
-
-    // public:
-    //     bool hasTexture() const;
-
-    //     void setAmbient(const glm::vec3 &ambient);
-    //     void setDiffuse(const glm::vec3 &diffuse);
-    //     void setSpecular(const glm::vec3 &specular);
-    //     void setShininess(float shininess);
-
-    //     const glm::vec3 &getAmbient() const;
-    //     const glm::vec3 &getDiffuse() const;
-    //     const glm::vec3 &getSpecular() const;
-    //     float getShininess() const;
-
-    // public: // TODO: private
-    //     std::shared_ptr<Shader> m_Shader;
-    //     std::shared_ptr<Texture> m_Texture;
-
-    //     glm::vec3 m_Ambient{0.19225f};
-    //     glm::vec3 m_Diffuse{0.50754f};
-    //     glm::vec3 m_Specular{0.508273f};
-    //     float m_Shininess = 0.4f;
     };
 } // namespace MykaEngine

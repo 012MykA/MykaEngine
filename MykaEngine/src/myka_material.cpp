@@ -30,6 +30,17 @@ namespace MykaEngine
         m_TextureSlots[name] = slot;
     }
 
+    void Material::unbindTextures()
+    {
+        for (const auto& [name, texture] : m_Textures)
+        {
+            if (texture != nullptr)
+            {
+                texture->unbind();
+            }
+        }
+    }
+
     void Material::setUniform(const std::string &name, const UniformValue &value)
     {
         m_Uniforms[name] = value;
