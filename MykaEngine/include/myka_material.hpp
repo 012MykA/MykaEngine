@@ -3,6 +3,7 @@
 #include "myka_shader.hpp"
 #include "myka_texture.hpp"
 #include "myka_light.hpp"
+#include "myka_logger.hpp"
 
 #include <glm/glm.hpp>
 

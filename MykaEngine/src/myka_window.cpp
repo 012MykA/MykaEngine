@@ -6,7 +6,7 @@ namespace MykaEngine
     {
         if (!glfwInit())
         {
-            throw std::runtime_error("failed to initialize glfw");
+            Logger::logFatal("failed to initialize glfw");
         }
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
@@ -24,14 +24,14 @@ namespace MykaEngine
 
         if (m_Window == nullptr)
         {
-            throw std::runtime_error("failed to create glfw window");
+            Logger::logFatal("failed to create glfw window");
         }
         glfwMakeContextCurrent(m_Window);
         glfwSetFramebufferSizeCallback(m_Window, framebufferSizeCallback);
 
         if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
         {
-            throw std::runtime_error("failed to load gl");
+            Logger::logFatal("failed to load gl");
         }
         glViewport(0, 0, m_Width, m_Height);
     }

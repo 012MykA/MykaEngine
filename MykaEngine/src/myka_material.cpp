@@ -118,7 +118,7 @@ namespace MykaEngine
         {
             return std::get<T>(it->second);
         }
-        throw std::runtime_error("failed to find uniform: " + name);
+        Logger::logError("failed to find uniform: '" + name + "' in Material::getUniform method");
     }
 
     // void Material::bindShader() const

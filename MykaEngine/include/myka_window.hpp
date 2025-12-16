@@ -1,5 +1,7 @@
 #pragma once
 
+#include "myka_logger.hpp"
+
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 

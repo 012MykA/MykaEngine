@@ -130,7 +130,7 @@ namespace MykaEngine
         GLint location = glGetUniformLocation(m_Program, name.c_str());
         if (location == -1)
         {
-            std::cerr << "failed to find uniform: '" << name << "'" << std::endl;
+            Logger::logWarning("failed to find uniform: '" + name + "' in Shader::getUniformLocation method");
             return -1;
         }
         m_UniformLocationCache[name] = location;
@@ -150,7 +150,8 @@ namespace MykaEngine
         if (!success)
         {
             glGetShaderInfoLog(id, 512, nullptr, infoLog);
-            throw std::runtime_error("ERROR::SHADER::COMPILATION_FAILED\n" + (std::string)infoLog);
+
+            Logger::logError("ERROR::SHADER::COMPILATION_FAILED\n" + (std::string)infoLog);
         }
 
         return id;
@@ -166,7 +167,8 @@ namespace MykaEngine
         if (!success)
         {
             glGetProgramInfoLog(m_Program, 512, nullptr, infoLog);
-            throw std::runtime_error("ERROR::PROGRAM::LINKING_FAILED\n" + (std::string)infoLog);
+
+            Logger::logError("ERROR::PROGRAM::LINKING_FAILED\n" + (std::string)infoLog);
         }
     }
 } // namespace MykaEngine
