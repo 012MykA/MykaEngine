@@ -31,6 +31,8 @@ int main()
         Renderer renderer;
         Camera camera(WINDOW_WIDTH, WINDOW_HEIGHT, window.getWindow());
         Scene scene;
+        
+        std::srand(std::time(nullptr));
 
         // Blending + Depth
         glEnable(GL_BLEND);
@@ -38,12 +40,8 @@ int main()
         glEnable(GL_DEPTH_TEST);
 
         // Light
-        std::shared_ptr<Light> light = std::make_shared<Light>(
-            glm::vec3(2.0f),
-            glm::vec3(0.1f), // Ambient
-            glm::vec3(0.8f), // Diffuse
-            glm::vec3(1.0f)  // Specular
-        );
+        std::shared_ptr<Light> light = std::make_shared<Light>();
+        light->setPosition(glm::vec3(5.0f));
         scene.addLight(light);
 
         Shader lightShader(LIGHT_VERTEX_SHADER_PATH, LIGHT_FRAGMENT_SHADER_PATH);
@@ -70,29 +68,28 @@ int main()
         std::shared_ptr<Mesh> cubeMesh = getCubeMesh();
 
         // Objects
-        // for (int i = 0; i < 10; ++i)
-        // {
-        //     std::shared_ptr<GameObject> box = std::make_shared<GameObject>(cubeMesh, boxMaterial);
+        for (int i = 0; i < 10; ++i)
+        {
+            std::shared_ptr<GameObject> box = std::make_shared<GameObject>(cubeMesh, boxMaterial);
 
-        //     float x = rand() % 10;
-        //     float y = rand() % 10;
-        //     float z = rand() % 10;
+            float x = rand() % 10;
+            float y = rand() % 10;
+            float z = rand() % 10;
 
-        //     box->getTransform().setPosition({x, y, z});
+            box->getTransform().setPosition({x, y, z});
+            box->getTransform().setRotation({rand(), rand(), rand()});
 
-        //     scene.addGameObject(box);
-        // }
+            scene.addGameObject(box);
+        }
 
         std::shared_ptr<GameObject> box = std::make_shared<GameObject>(cubeMesh, boxMaterial);
-        box->getTransform().setPosition(glm::vec3(0.0f));
+        box->getTransform().setPosition(glm::vec3(5.0f, -5.0f, 5.0f));
+        box->getTransform().setScale({15.0f, 15.0f, 15.0f});
         scene.addGameObject(box);
-
-        std::srand(std::time(nullptr));
-        // std::vector<float> offsets;
-        // for (int i = 0; i < scene.getGameObjects().size(); i++)
-        // {
-        //     offsets.push_back(static_cast<float>(std::rand() % 100));
-        // }
+        
+        std::shared_ptr<GameObject> box2 = std::make_shared<GameObject>(cubeMesh, boxMaterial);
+        box2->getTransform().setPosition(glm::vec3(5.0f, 5.0f, 20.0f));
+        scene.addGameObject(box2);
 
         double previousTime = glfwGetTime();
         int fps = 0;

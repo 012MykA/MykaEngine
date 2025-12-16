@@ -40,10 +40,14 @@ namespace MykaEngine
         float x = cos(glfwGetTime()) * 2;
         float z = sin(glfwGetTime()) * 2;
 
-        material->setUniform("u_Light.direction", glm::vec3(x, -1.0f, z));
+        material->setUniform("u_Light.position", light.getPosition());
+        material->setUniform("u_Light.direction", light.getDirection());
         material->setUniform("u_Light.ambient", light.getAmbient());
         material->setUniform("u_Light.diffuse", light.getDiffuse());
         material->setUniform("u_Light.specular", light.getSpecular());
+        material->setUniform("u_Light.constant", light.constant);
+        material->setUniform("u_Light.linear", light.linear);
+        material->setUniform("u_Light.quadratic", light.quadratic);
 
         material->applyUnuiforms();
 
