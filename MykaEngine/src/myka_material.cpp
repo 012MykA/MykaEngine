@@ -49,7 +49,10 @@ namespace MykaEngine
     void Material::applyUnuiforms() const
     {
         if (!m_Shader)
+        {
+            Logger::logError("cannot apply uniforms to a shader. Add a shader first");
             return;
+        }
 
         m_Shader->use();
 
@@ -98,7 +101,7 @@ namespace MykaEngine
                 value);
         }
 
-        for (const auto& [name, texture] :m_Textures)
+        for (const auto& [name, texture] : m_Textures)
         {
             if (texture != nullptr)
             {
@@ -106,6 +109,10 @@ namespace MykaEngine
                 
                 texture->bind(slot);
                 m_Shader->setUniformInt(name, slot);
+            }
+            else
+            {
+                Logger::logWarning("attempt to bind texture: " + name + " is nullptr");
             }
         }
     }
@@ -120,82 +127,4 @@ namespace MykaEngine
         }
         Logger::logError("failed to find uniform: '" + name + "' in Material::getUniform method");
     }
-
-    // void Material::bindShader() const
-    // {
-    //     m_Shader->use();
-    // }
-
-    // void Material::bindTexture() const
-    // {
-    //     m_Texture->bind(0);
-    // }
-
-    // void Material::setUniforms(const glm::mat4 &model, const glm::mat4 &view, const glm::mat4 &proj, const glm::vec3 &viewPos, const Light &light) const
-    // {
-    //     glm::mat4 mvp = proj * view * model;
-
-    //     m_Shader->setUniformMat4("u_MVP", mvp);
-    //     m_Shader->setUniformMat4("u_Model", model);
-
-    //     // Material
-    //     m_Shader->setUniformVec3("u_Material.ambient", m_Ambient);
-    //     m_Shader->setUniformVec3("u_Material.diffuse", m_Diffuse);
-    //     m_Shader->setUniformVec3("u_Material.specular", m_Specular);
-    //     m_Shader->setUniformFloat("u_Material.shininess", m_Shininess);
-
-    //     // Light
-    //     m_Shader->setUniformVec3("u_Light.position", light.getPosition());
-    //     m_Shader->setUniformVec3("u_Light.ambient",light .getAmbient());
-    //     m_Shader->setUniformVec3("u_Light.diffuse", light.getDiffuse());
-    //     m_Shader->setUniformVec3("u_Light.specular", light.getSpecular());
-
-    //     m_Shader->setUniformVec3("u_ViewPos", viewPos);
-    //     // m_Shader->setUniform1i("u_Texture", 0);
-    // }
-
-    // void Material::setAmbient(const glm::vec3 &ambient)
-    // {
-    //     m_Ambient = ambient;
-    // }
-
-    // void Material::setDiffuse(const glm::vec3 &diffuse)
-    // {
-    //     m_Diffuse = diffuse;
-    // }
-
-    // void Material::setSpecular(const glm::vec3 &specular)
-    // {
-    //     m_Specular = specular;
-    // }
-
-    // void Material::setShininess(float shininess)
-    // {
-    //     m_Shininess = shininess;
-    // }
-
-    // const glm::vec3 &Material::getAmbient() const
-    // {
-    //     return m_Ambient;
-    // }
-
-    // const glm::vec3 &Material::getDiffuse() const
-    // {
-    //     return m_Diffuse;
-    // }
-
-    // const glm::vec3 &Material::getSpecular() const
-    // {
-    //     return m_Specular;
-    // }
-
-    // float Material::getShininess() const
-    // {
-    //     return m_Shininess;
-    // }
-
-    // bool Material::hasTexture() const
-    // {
-    //     return m_Texture != nullptr;
-    // }
 } // namespace MykaEngine

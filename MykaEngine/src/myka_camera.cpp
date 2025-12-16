@@ -29,6 +29,19 @@ namespace MykaEngine
     void Camera::setPosition(const glm::vec3 &position)
     {
         m_Position = position;
+        updateViewMatrix();
+    }
+
+    void Camera::setPitch(float pitch)
+    {
+        m_Pitch = pitch;
+        updateViewMatrix();
+    }
+
+    void Camera::setYaw(float yaw)
+    {
+        m_Yaw = yaw;
+        updateViewMatrix();
     }
 
     void Camera::updateProjectionMatrix()

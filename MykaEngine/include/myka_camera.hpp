@@ -26,7 +26,9 @@ namespace MykaEngine
         const glm::mat4 &getProjectionMatrix() const;
         const glm::vec3 &getPosition() const;
 
-        void setPosition(const glm::vec3& position);
+        void setPosition(const glm::vec3 &position);
+        void setPitch(float pitch);
+        void setYaw(float yaw);
 
     private:
         void updateViewMatrix();
