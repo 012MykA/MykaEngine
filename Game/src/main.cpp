@@ -39,9 +39,9 @@ int main()
 
         // Light
         std::shared_ptr<Light> light = std::make_shared<Light>(
-            glm::vec3(5.0f),
-            glm::vec3(0.1f), // Ambient (сделайте тусклым, например 0.1)
-            glm::vec3(0.8f), // Diffuse (основной свет)
+            glm::vec3(2.0f),
+            glm::vec3(0.1f), // Ambient
+            glm::vec3(0.8f), // Diffuse
             glm::vec3(1.0f)  // Specular
         );
         scene.addLight(light);
@@ -70,28 +70,29 @@ int main()
         std::shared_ptr<Mesh> cubeMesh = getCubeMesh();
 
         // Objects
-        for (int i = 0; i < 10; ++i)
-        {
-            std::shared_ptr<GameObject> box = std::make_shared<GameObject>(cubeMesh, boxMaterial);
+        // for (int i = 0; i < 10; ++i)
+        // {
+        //     std::shared_ptr<GameObject> box = std::make_shared<GameObject>(cubeMesh, boxMaterial);
 
-            float x = rand() % 10;
-            float y = rand() % 10;
-            float z = rand() % 10;
+        //     float x = rand() % 10;
+        //     float y = rand() % 10;
+        //     float z = rand() % 10;
 
-            box->getTransform().setPosition({x, y, z});
+        //     box->getTransform().setPosition({x, y, z});
 
-            scene.addGameObject(box);
-        }
+        //     scene.addGameObject(box);
+        // }
 
-        camera.setPosition({5.0f, 5.0f, 10.0f});
-        camera.setYaw(-120);
+        std::shared_ptr<GameObject> box = std::make_shared<GameObject>(cubeMesh, boxMaterial);
+        box->getTransform().setPosition(glm::vec3(0.0f));
+        scene.addGameObject(box);
 
         std::srand(std::time(nullptr));
-        std::vector<float> offsets;
-        for (int i = 0; i < scene.getGameObjects().size(); i++)
-        {
-            offsets.push_back(static_cast<float>(std::rand() % 100));
-        }
+        // std::vector<float> offsets;
+        // for (int i = 0; i < scene.getGameObjects().size(); i++)
+        // {
+        //     offsets.push_back(static_cast<float>(std::rand() % 100));
+        // }
 
         double previousTime = glfwGetTime();
         int fps = 0;
@@ -116,19 +117,19 @@ int main()
             Timer::onUpdate();
             camera.onUpdate();
 
-            float time = static_cast<float>(glfwGetTime());
-            int i = 0;
-            for (auto &box : scene.getGameObjects())
-            {
-                float off = offsets[i];
+            // float time = static_cast<float>(glfwGetTime());
+            // int i = 0;
+            // for (auto &box : scene.getGameObjects())
+            // {
+            //     float off = offsets[i];
 
-                float rx = sin(time * 0.5f + off) * 1.5f;
-                float ry = cos(time * 0.3f + off * 0.5f) * 1.2f;
-                float rz = sin(time * 0.7f + off * 2.0f) * 1.0f;
+            //     float rx = sin(time * 0.5f + off) * 1.5f;
+            //     float ry = cos(time * 0.3f + off * 0.5f) * 1.2f;
+            //     float rz = sin(time * 0.7f + off * 2.0f) * 1.0f;
 
-                box->getTransform().rotate(glm::vec3(rx, ry, rz));
-                i++;
-            }
+            //     box->getTransform().rotate(glm::vec3(rx, ry, rz));
+            //     i++;
+            // }
 
             // float x = cos(glfwGetTime() * 1.0f) * 2.0f;
             // float z = sin(glfwGetTime() * 1.0f) * 2.0f;
@@ -206,7 +207,7 @@ std::shared_ptr<Mesh> getCubeMesh()
         12, 13, 14, 14, 15, 12,
         16, 17, 18, 18, 19, 16,
         20, 21, 22, 22, 23, 20};
-        
+
     return std::make_shared<Mesh>(vertices, indices);
 }
 

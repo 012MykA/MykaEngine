@@ -36,7 +36,11 @@ namespace MykaEngine
         material->setUniform("u_MVP", mvp);
         material->setUniform("u_Model", model);
         material->setUniform("u_ViewPos", camera.getPosition());
-        material->setUniform("u_Light.position", light.getPosition());
+
+        float x = cos(glfwGetTime()) * 2;
+        float z = sin(glfwGetTime()) * 2;
+
+        material->setUniform("u_Light.direction", glm::vec3(x, -1.0f, z));
         material->setUniform("u_Light.ambient", light.getAmbient());
         material->setUniform("u_Light.diffuse", light.getDiffuse());
         material->setUniform("u_Light.specular", light.getSpecular());
