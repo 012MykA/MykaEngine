@@ -29,7 +29,7 @@ namespace MykaEngine
         }
         else
         {
-            std::cerr << "Failed to open vertex shader file: " << vertexPath << std::endl;
+            Logger::logError("Failed to open vertex shader file: " + vertexPath.string());
             return;
         }
 
@@ -45,7 +45,7 @@ namespace MykaEngine
         }
         else
         {
-            std::cerr << "Failed to open fragment shader file: " << fragmentPath << std::endl;
+            Logger::logError("Failed to open fragment shader file: " + fragmentPath.string());
             return;
         }
 
@@ -130,7 +130,7 @@ namespace MykaEngine
         GLint location = glGetUniformLocation(m_Program, name.c_str());
         if (location == -1)
         {
-            Logger::logWarning("failed to find uniform: '" + name + "' in Shader::getUniformLocation method");
+            // Logger::logWarning("failed to find uniform: '" + name + "' in Shader::getUniformLocation method");
             return -1;
         }
         m_UniformLocationCache[name] = location;

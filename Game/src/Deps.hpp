@@ -3,9 +3,11 @@ constexpr auto WINDOW_WIDTH = 1920;
 constexpr auto WINDOW_HEIGHT = 1080;
 
 // Shaders
-constexpr auto DEFAULT_VERTEX_SHADER_PATH = "E:/vscode/MykaEngine/shaders/defaultVert.glsl";
-constexpr auto DEFAULT_FRAGMENT_SHADER_PATH = "E:/vscode/MykaEngine/shaders/defaultFrag.glsl";
+constexpr auto COLOR_VERTEX_SHADER_PATH = "E:/vscode/MykaEngine/shaders/colorVert.glsl";
+constexpr auto COLOR_FRAGMENT_SHADER_PATH = "E:/vscode/MykaEngine/shaders/colorFrag.glsl";
 
+constexpr auto TEX_VERTEX_SHADER_PATH = "E:/vscode/MykaEngine/shaders/texVert.glsl";
+constexpr auto TEX_FRAGMENT_SHADER_PATH = "E:/vscode/MykaEngine/shaders/texFrag.glsl";
 
 constexpr auto LIGHT_VERTEX_SHADER_PATH = "E:/vscode/MykaEngine/shaders/lightVert.glsl";
 constexpr auto LIGHT_FRAGMENT_SHADER_PATH = "E:/vscode/MykaEngine/shaders/lightFrag.glsl";

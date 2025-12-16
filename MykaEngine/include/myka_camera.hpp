@@ -15,10 +15,11 @@ namespace MykaEngine
     {
     public:
         Camera(float width, float height, GLFWwindow *window);
+        virtual ~Camera() = default;
 
-        void onUpdate();
+        virtual void onUpdate();
 
-        void handleInputs();
+        virtual void handleInputs();
 
     public:
         const glm::mat4 &getViewMatrix() const;

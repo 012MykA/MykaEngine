@@ -38,68 +38,86 @@ int main()
         // Light
         Light light = {
             glm::vec3(0.0f, 1.0f, 0.0f),
-            glm::vec3(0.2f),
+            glm::vec3(1.0f),
             glm::vec3(0.5f),
             glm::vec3(1.0f)};
 
         Shader lightShader(LIGHT_VERTEX_SHADER_PATH, LIGHT_FRAGMENT_SHADER_PATH);
         Material lightMaterial(std::make_shared<Shader>(lightShader));
-        Mesh sphereMesh = getSphereMesh(0.2, 32, 32);
-        GameObject lightSphere(std::make_shared<Mesh>(sphereMesh), std::make_shared<Material>(lightMaterial));
+        Mesh lightMesh = getSphereMesh(0.2, 32, 32);
+        GameObject lightSphere(std::make_shared<Mesh>(lightMesh), std::make_shared<Material>(lightMaterial));
         lightSphere.getTransform().setPosition(light.getPosition());
         scene.addGameObject(std::make_shared<GameObject>(lightSphere));
         
-        Shader objectShader(DEFAULT_VERTEX_SHADER_PATH, DEFAULT_FRAGMENT_SHADER_PATH);
+        Shader colorShader(COLOR_VERTEX_SHADER_PATH, COLOR_FRAGMENT_SHADER_PATH);
+        Shader texShader(TEX_VERTEX_SHADER_PATH, TEX_FRAGMENT_SHADER_PATH);
+
+        Texture woodTexture(WOOD_TEXTURE_PATH);
         
         // Materials
-        Material emerald(std::make_shared<Shader>(objectShader));
+        Material emerald(std::make_shared<Shader>(colorShader));
         emerald.setUniform("u_Material.ambient", glm::vec3(0.0215, 0.1745, 0.0215));
         emerald.setUniform("u_Material.diffuse", glm::vec3(0.07568, 0.61424, 0.07568));
         emerald.setUniform("u_Material.specular", glm::vec3(0.633, 0.727811, 0.633));
         emerald.setUniform("u_Material.shininess", 0.6f * 128.0f);
         setLightUniforms(emerald, light);
         
-        Material ruby(std::make_shared<Shader>(objectShader));
+        Material ruby(std::make_shared<Shader>(colorShader));
         ruby.setUniform("u_Material.ambient", glm::vec3(0.1745, 0.01175, 0.01175));
         ruby.setUniform("u_Material.diffuse", glm::vec3(0.61424, 0.04136, 0.04136));
         ruby.setUniform("u_Material.specular", glm::vec3(0.727811, 0.626959, 0.626959));
         ruby.setUniform("u_Material.shininess", 0.6f * 128.0f);
         setLightUniforms(ruby, light);
 
-        Material cyanPlastic(std::make_shared<Shader>(objectShader));
+        Material cyanPlastic(std::make_shared<Shader>(colorShader));
         cyanPlastic.setUniform("u_Material.ambient", glm::vec3(0.0, 0.1, 0.06));
         cyanPlastic.setUniform("u_Material.diffuse", glm::vec3(0.0, 0.50980392, 0.50980392));
         cyanPlastic.setUniform("u_Material.specular", glm::vec3(0.50196078, 0.50196078, 0.50196078));
         cyanPlastic.setUniform("u_Material.shininess", 0.25f * 128.0f);
         setLightUniforms(cyanPlastic, light);
 
-        Material yellowRubber(std::make_shared<Shader>(objectShader));
+        Material yellowRubber(std::make_shared<Shader>(colorShader));
         yellowRubber.setUniform("u_Material.ambient", glm::vec3(0.05, 0.05, 0.0));
         yellowRubber.setUniform("u_Material.diffuse", glm::vec3(0.5, 0.5, 0.4));
         yellowRubber.setUniform("u_Material.specular", glm::vec3(0.7, 0.7, 0.04));
         yellowRubber.setUniform("u_Material.shininess", 0.078125f * 128.0f);
         setLightUniforms(yellowRubber, light);
 
+        Material wood(std::make_shared<Shader>(texShader));
+        wood.setTexture("u_Texture", std::make_shared<Texture>(woodTexture));
+        wood.setUniform("u_Material.ambient", glm::vec3(0.05, 0.05, 0.0));
+        wood.setUniform("u_Material.diffuse", glm::vec3(0.5, 0.5, 0.4));
+        wood.setUniform("u_Material.specular", glm::vec3(0.7, 0.7, 0.04));
+        wood.setUniform("u_Material.shininess", 0.078125f * 128.0f);
+        setLightUniforms(wood, light);
+
         // Meshes
-        Mesh objectsMesh = getSphereMesh(0.5f, 64, 64);
+        Mesh sphereMesh = getSphereMesh(0.5f, 64, 64);
+        Mesh cubeMesh = getCubeMesh();
+        Mesh platformMesh = getPlatformMesh();
 
         // Objects
-        GameObject emeraldCube(std::make_shared<Mesh>(objectsMesh), std::make_shared<Material>(emerald));
+        GameObject emeraldCube(std::make_shared<Mesh>(sphereMesh), std::make_shared<Material>(emerald));
         emeraldCube.getTransform().setPosition(glm::vec3(2.0f, 0.0f, 0.0f));
 
-        GameObject rubyCube(std::make_shared<Mesh>(objectsMesh), std::make_shared<Material>(ruby));
+        GameObject rubyCube(std::make_shared<Mesh>(sphereMesh), std::make_shared<Material>(ruby));
         rubyCube.getTransform().setPosition(glm::vec3(-2.0f, 0.0f, 0.0f));
 
-        GameObject cyanPlasticCube(std::make_shared<Mesh>(objectsMesh), std::make_shared<Material>(cyanPlastic));
+        GameObject cyanPlasticCube(std::make_shared<Mesh>(sphereMesh), std::make_shared<Material>(cyanPlastic));
         cyanPlasticCube.getTransform().setPosition(glm::vec3(0.0f, 0.0f, 2.0f));
 
-        GameObject yellowRubberCube(std::make_shared<Mesh>(objectsMesh), std::make_shared<Material>(yellowRubber));
-        yellowRubberCube.getTransform().setPosition(glm::vec3(0.0f, 0.0f, -2.0f));
+        std::shared_ptr<GameObject> yellowRubberCube = std::make_shared<GameObject>(std::make_shared<Mesh>(sphereMesh), std::make_shared<Material>(yellowRubber));
+        yellowRubberCube->getTransform().setPosition(glm::vec3(0.0f, 0.0f, -2.0f));
 
+        std::shared_ptr<GameObject> platform = std::make_shared<GameObject>(std::make_shared<Mesh>(cubeMesh), std::make_shared<Material>(wood));
+        platform->getTransform().setScale(glm::vec3(10.0f, 0.25f, 10.0f));
+        platform->getTransform().setPosition({0.0f, -1.0f, 0.0f});
+
+        scene.addGameObject(platform);
         scene.addGameObject(std::make_shared<GameObject>(emeraldCube));
         scene.addGameObject(std::make_shared<GameObject>(rubyCube));
         scene.addGameObject(std::make_shared<GameObject>(cyanPlasticCube));
-        scene.addGameObject(std::make_shared<GameObject>(yellowRubberCube));
+        scene.addGameObject(yellowRubberCube);
 
         camera.setPosition(glm::vec3(0.0f, 1.0f, 2.0f));
 
